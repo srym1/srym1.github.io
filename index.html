@@ -2,6 +2,8 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
+  <!-- يخلّي المتصفّح يتأكد من وجود نسخة أحدث بدل ما يعرض المخزّنة ١٠ دقائق -->
+  <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>RYM — قصر الغابة | لعبة سيرفايفل عربية تلعبها في المتصفح</title>
 <meta name="description" content="قصر الغابة من RYM — لعبة رعب وسيرفايفل عربية بمنظور أول تلعبها مجاناً في المتصفح بدون تحميل. ٣ مراحل، ٢٥ راوند، ١٨ نوع وحش، أسلحة وتطويرات وصناديق سرّية.">
@@ -10509,7 +10511,6 @@ const Renderer = {
     this.drawWeapon(g, dt);
     // --- التصويب ---
     this.drawCrosshair(g);
-    this.keyGuide(g);
   },
 
   /* ---------- طبقة المشهد السينمائي ---------- */
@@ -10824,66 +10825,6 @@ const Renderer = {
       gr.addColorStop(0, 'rgba(192,114,255,0)');
       gr.addColorStop(1, `rgba(192,114,255,${0.20 + Math.sin(g.time * 4) * 0.06})`);
       ctx.fillStyle = gr; ctx.fillRect(0, 0, W, H);
-    }
-  },
-
-  /* ---------- دليل المفاتيح ----------
-     سهم على حافة الشاشة يشير لأقرب مفتاح على الأرض، ومسافته.
-     السبب: المفتاح يطيح مكان ما مات الوحش، وممكن يكون في غرفة ثانية
-     فيدور اللاعب على الخريطة كلها ويظن إنه ما نزل أصلاً. */
-  keyGuide(g) {
-    if (!g.player || g.state !== 'playing') return;
-    const keys = g.pickups.filter(u => !u.taken && (u.kind === 'key' || u.kind === 'skey'));
-    if (!keys.length) return;
-    const ctx = this.ctx, W = this.W, H = this.H, p = g.player;
-
-    for (const u of keys) {
-      const dx = u.x - p.x, dy = u.y - p.y;
-      const dist = Math.hypot(dx, dy);
-      const gold = u.kind === 'key';
-      const col = gold ? '#ffd54a' : '#c9a0ff';
-
-      // الزاوية بالنسبة لاتجاه نظر اللاعب
-      let rel = Math.atan2(dy, dx) - p.a;
-      while (rel > Math.PI) rel -= TAU;
-      while (rel < -Math.PI) rel += TAU;
-
-      const inView = Math.abs(rel) < FOV / 2;
-      const pulse = 0.55 + Math.abs(Math.sin(g.time * 3.4)) * 0.45;
-
-      ctx.save();
-      if (inView) {
-        // داخل مجال الرؤية: علامة فوق مكانه + المسافة
-        const sx = W / 2 + Math.tan(rel) / Math.tan(FOV / 2) * (W / 2);
-        const sy = H * 0.34;
-        ctx.globalAlpha = 0.55 + pulse * 0.45;
-        ctx.fillStyle = col;
-        ctx.beginPath();
-        ctx.moveTo(sx, sy + 12); ctx.lineTo(sx - 9, sy - 4); ctx.lineTo(sx + 9, sy - 4);
-        ctx.closePath(); ctx.fill();
-        ctx.strokeStyle = 'rgba(0,0,0,.55)'; ctx.lineWidth = 1.6; ctx.stroke();
-        ctx.globalAlpha = 1;
-        ctx.font = '600 12px system-ui, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillStyle = 'rgba(0,0,0,.6)';
-        ctx.fillText(Math.round(dist) + 'm', sx + 1, sy - 9);
-        ctx.fillStyle = col;
-        ctx.fillText(Math.round(dist) + 'm', sx, sy - 10);
-      } else {
-        // خارج الرؤية: سهم على الحافة يلفّ حول مركز الشاشة
-        const R = Math.min(W, H) * 0.36;
-        const ax = W / 2 + Math.sin(rel) * R;
-        const ay = H / 2 - Math.cos(rel) * R * 0.62;
-        ctx.translate(ax, ay);
-        ctx.rotate(rel);
-        ctx.globalAlpha = 0.35 + pulse * 0.4;
-        ctx.fillStyle = col;
-        ctx.beginPath();
-        ctx.moveTo(0, -13); ctx.lineTo(9, 7); ctx.lineTo(0, 2); ctx.lineTo(-9, 7);
-        ctx.closePath(); ctx.fill();
-        ctx.strokeStyle = 'rgba(0,0,0,.5)'; ctx.lineWidth = 1.4; ctx.stroke();
-      }
-      ctx.restore();
     }
   },
 
@@ -11994,18 +11935,28 @@ const MiniMap = {
     // مفاتيح وأشياء
     for (const u of g.pickups) {
       if (u.taken) continue;
-      if (u.kind === 'skey') {           // المفتاح السرّي — علامة بنفسجية نابضة
-        const pulse = 0.55 + Math.abs(Math.sin(g.time * 3)) * 0.45;
-        x.fillStyle = '#a86bff';
+      if (u.kind === 'skey') {
+        /* المفتاح السرّي — أوضح علامة على الخريطة.
+           هالة + معيّن + حلقتان نابضتان، عشان تلقاه من نظرة وحدة
+           بلا ما نحط علامة على الشاشة تخرب عليك الاستكشاف. */
+        const cx = u.x * S, cy = u.y * S;
+        const pulse = 0.5 + Math.abs(Math.sin(g.time * 2.6)) * 0.5;
+        const gl = x.createRadialGradient(cx, cy, 1, cx, cy, 14);
+        gl.addColorStop(0, 'rgba(168,107,255,.55)');
+        gl.addColorStop(1, 'rgba(168,107,255,0)');
+        x.fillStyle = gl;
+        x.beginPath(); x.arc(cx, cy, 14, 0, TAU); x.fill();
+        x.fillStyle = '#c9a0ff';
         x.beginPath();
-        x.moveTo(u.x * S, u.y * S - 5);
-        x.lineTo(u.x * S + 4.5, u.y * S);
-        x.lineTo(u.x * S, u.y * S + 5);
-        x.lineTo(u.x * S - 4.5, u.y * S);
+        x.moveTo(cx, cy - 7); x.lineTo(cx + 6, cy);
+        x.lineTo(cx, cy + 7); x.lineTo(cx - 6, cy);
         x.closePath(); x.fill();
+        x.strokeStyle = '#2a1440'; x.lineWidth = 1.2; x.stroke();
         x.globalAlpha = pulse;
-        x.strokeStyle = '#d9b6ff'; x.lineWidth = 1.4;
-        x.beginPath(); x.arc(u.x * S, u.y * S, 7.5, 0, TAU); x.stroke();
+        x.strokeStyle = '#e2ccff'; x.lineWidth = 1.8;
+        x.beginPath(); x.arc(cx, cy, 9.5, 0, TAU); x.stroke();
+        x.globalAlpha = pulse * 0.5;
+        x.beginPath(); x.arc(cx, cy, 13 + pulse * 3, 0, TAU); x.stroke();
         x.globalAlpha = 1;
         continue;
       }
@@ -14296,7 +14247,10 @@ const Game = {
     {
       const have = this.keys + this.pickups.filter(u => !u.taken && u.kind === 'key').length;
       if (have < st.keys) {
-        const isDropper = st.keyDroppers.includes(e.type);
+        /* المني بوس والبوس: مفتاح مضمون دائماً.
+           هذول أصعب وحوش المرحلة، ومن العدل إن قتلهم يعطي مفتاحاً أكيداً. */
+        const isElite = !!(e.def && e.def.boss);
+        const isDropper = isElite || st.keyDroppers.includes(e.type);
         /* ضمان إيقاع المفاتيح.
            الوحوش المخصّصة للمفاتيح ما تظهر إلا من الجولة ٦ تقريباً، فكان
            اللاعب يقضي خمس جولات بلا ولا مفتاح ويظن إن المرحلة بلا مفاتيح.
@@ -14307,7 +14261,8 @@ const Game = {
         const due = Math.ceil(st.keys * pace);
         if (isDropper || have < due) {
           this.pickups.push(new Pickup('key', e.x, e.y));
-          this.toast(`سقط ${st.keyName}!`, 2.2);
+          this.toast(isElite ? `☠ ${e.def.name} أسقط ${st.keyName}!` : `سقط ${st.keyName}!`,
+                     isElite ? 3 : 2.2);
           SFX.play('key');
         }
       }
@@ -15412,7 +15367,7 @@ const Touch = {
    70_shell.js : الموقع، القائمة، الإعدادات، الحفظ والتحميل
    ============================================================ */
 
-const VERSION = '2.10.1';
+const VERSION = '2.10.2';
 const BUILD_DATE = '٢٦ أغسطس ٢٠٢٦';
 const BUILD_DATE_EN = '26 August 2026';
 
