@@ -2938,7 +2938,7 @@ const WEAPONS = {
   // كل طلقة تزعزع الوحش — سلاح «أوقفه قبل لا يوصلك»
   revolver: { key:'revolver', name: 'ريفولفر ٣٥٧',    rarity:'uncommon',  dmg: 88,  rpm: 140, mag: 6,  reserve: 48,  spread: 0.010, pellets: 1, auto: false, reload: 1.7, range: 30, sound:'heavy',   shape:'revolver', stunT: 0.5, tracer:'#ffcf7a' },
   // يرمي كل اللي قدامك بعيد — سلاح فكّ الحصار
-  sawed:    { key:'sawed',    name: 'بندقية مقصوصة',  rarity:'uncommon',  dmg: 18,  rpm: 130, mag: 2,  reserve: 40,  spread: 0.115, pellets: 8, auto: false, reload: 1.6, range: 9,  sound:'shotgun', shape:'shotgun', push: 6.0 },
+  sawed:    { key:'sawed',    name: 'بندقية مقصوصة',  rarity:'uncommon',  dmg: 18,  rpm: 130, mag: 2,  reserve: 40,  spread: 0.115, pellets: 8, auto: false, reload: 1.6, range: 9,  sound:'shotgun', shape:'sawed', push: 6.0 },
   // كل إصابة ترجّع لك شوي دم — سلاح البقاء وأنت تتحرّك
   smg:      { key:'smg',      name: 'رشاش صغير',      rarity:'uncommon',  dmg: 20,  rpm: 720, mag: 32, reserve: 240, spread: 0.038, pellets: 1, auto: true,  reload: 1.5, range: 22, sound:'smg',     shape:'smg', lifesteal: 0.06 },
   // مدى أطول من المقصوصة ودفع أخف — ضرر مركّز مو طرد
@@ -10908,9 +10908,8 @@ const Renderer = {
 
     // أشكال ما لها موديل خاص — تستعير أقرب موديل بدل ما تظهر بلا سلاح
     // ما عاد فيه استعارة — كل سلاح له موديله الخاص
-    /* أشكال الميثيك تستعير أقرب موديل حالياً — لها موديلاتها الخاصة قريباً */
-    const SHAPE_ALIAS = { dragonfang: 'katana', doomshot: 'shotgun', soulripper: 'lmg' };
-    const shape = SHAPE_ALIAS[w.def.shape] || w.def.shape;
+    /* كل سلاح له موديله الخاص — ما عاد فيه استعارة */
+    const shape = w.def.shape;
     const metal = '#33373e', metalD = '#1b1e23', metalL = '#575d68';
     const wood = '#6b4525', woodD = '#4a2e17';
     const skin = '#c49a6f', skinD = '#9c7550', sleeve = '#232830', sleeveD = '#161a20';
@@ -10933,79 +10932,288 @@ const Renderer = {
       }
     };
 
+    /* ---- أدوات التفاصيل ----
+       المعدن المسطّح هو اللي كان يخلّي الأسلحة تبان رخيصة ومتشابهة.
+       تدرّج + برشام + فتحات تهوية = سطح له عمق، وكل سلاح يبان مختلف. */
+    const grad = (x, y, ww, hh, top, bot) => {
+      const gr = ctx.createLinearGradient(0, y, 0, y + hh);
+      gr.addColorStop(0, top); gr.addColorStop(1, bot);
+      ctx.fillStyle = gr; ctx.fillRect(x, y, ww, hh);
+    };
+    const round = (x, y, ww, hh, r, c) => {
+      ctx.fillStyle = c; ctx.beginPath(); ctx.roundRect(x, y, ww, hh, r); ctx.fill();
+    };
+    const vents = (x, y, n, gap, ww, hh, c) => {
+      ctx.fillStyle = c;
+      for (let i = 0; i < n; i++) ctx.fillRect(x + i * gap, y, ww, hh);
+    };
+    const rivets = (x, y, n, gap, c) => {
+      ctx.fillStyle = c;
+      for (let i = 0; i < n; i++) { ctx.beginPath(); ctx.arc(x + i * gap, y, 2.4, 0, TAU); ctx.fill(); }
+    };
+    const bore = (x, y, r) => {
+      ctx.fillStyle = '#07080a'; ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.fill();
+      ctx.strokeStyle = '#6e7681'; ctx.lineWidth = 2; ctx.stroke();
+    };
+    const kick = Math.min(g.recoil || 0, 1);      // ٠..١ — قوة الارتداد الحالية
+    const rl   = g.reloadT > 0 ? Math.sin(clamp(1 - g.reloadT / g.reloadTotal, 0, 1) * Math.PI) : 0;
+
     let mx = 110, my = -134;   // موضع الفوهة
 
-    if (shape === 'pistol' || shape === 'revolver') {
+    if (shape === 'pistol') {
+      /* M9 — مسدس دقيق: المزلاج يرجع مع كل طلقة، شعيرتان، ومخزن بارز */
       arm(-52, -112);
-      rect(-34, -146, 34, 66, '#3d4149');             // المقبض
-      rect(-34, -146, 9, 66, '#23262c');
-      fingers(-36, -134);
-      rect(-26, -172, 82, 34, metal);                 // المزلاج
-      rect(-26, -172, 82, 6, metalL);
-      rect(-26, -142, 82, 5, metalD);
-      rect(48, -166, 14, 22, metalD);                 // الفوهة
-      rect(-20, -178, 8, 7, metalL);                  // الشعيرة
-      if (shape === 'revolver') {
-        ctx.fillStyle = metalL; ctx.beginPath(); ctx.arc(6, -152, 17, 0, TAU); ctx.fill();
-        ctx.fillStyle = metalD; ctx.beginPath(); ctx.arc(6, -152, 6, 0, TAU); ctx.fill();
-        rect(-34, -146, 34, 26, woodD);
+      round(-40, -152, 42, 80, 5, '#2e323a');
+      grad(-40, -152, 42, 80, '#454b55', '#1e2126');
+      vents(-36, -140, 6, 11, 32, 3, '#15171b');        // تخشين المقبض
+      fingers(-38, -136);
+      round(-8, -134, 38, 15, 4, '#25282e');            // حارس الزناد
+      rect(4, -138, 8, 17, '#0e1013');                  // الزناد
+      ctx.save(); ctx.translate(-kick * 17, 0);          // المزلاج يتراجع
+      grad(-32, -178, 96, 34, '#525963', '#22252b');
+      rect(-32, -178, 96, 4, '#79808c');
+      vents(-27, -170, 5, 7, 3, 19, '#191c21');         // تخشين المزلاج
+      rect(54, -172, 18, 23, '#23262c');
+      bore(66, -161, 6);
+      rect(-26, -184, 8, 7, '#8d95a1');
+      rect(46, -184, 6, 7, '#8d95a1');
+      ctx.restore();
+      rect(-32, -80, 28, 11, '#15171b');                // قاعدة المخزن
+      mx = 70; my = -161;
+    } else if (shape === 'revolver') {
+      /* ٣٥٧ — أسطوانة تدور مع كل طلقة، مطرقة تنكسر، ومقبض خشب */
+      const spin = (g.shotsFired || 0) * (TAU / 6) + kick * 0.55;
+      arm(-52, -112);
+      round(-44, -152, 46, 84, 8, woodD);
+      grad(-44, -152, 46, 84, '#875c34', '#3a2310');
+      for (let i = 0; i < 5; i++) rect(-40, -144 + i * 15, 38, 3, 'rgba(0,0,0,.38)');
+      fingers(-40, -136);
+      round(-12, -136, 38, 16, 4, '#22252b');
+      rect(0, -140, 8, 18, '#0e1013');
+      grad(-26, -178, 62, 38, '#626a76', '#1f2228');    // الإطار
+      ctx.save(); ctx.translate(6, -154); ctx.rotate(spin);   // الأسطوانة
+      ctx.fillStyle = '#525a65'; ctx.beginPath(); ctx.arc(0, 0, 21, 0, TAU); ctx.fill();
+      ctx.strokeStyle = '#2a2e35'; ctx.lineWidth = 2; ctx.stroke();
+      ctx.fillStyle = '#1a1d22';
+      for (let i = 0; i < 6; i++) {
+        const a = i * TAU / 6;
+        ctx.beginPath(); ctx.arc(Math.cos(a) * 12.5, Math.sin(a) * 12.5, 5.2, 0, TAU); ctx.fill();
       }
-      mx = 62; my = -155;
+      ctx.fillStyle = '#7c848f'; ctx.beginPath(); ctx.arc(0, 0, 4, 0, TAU); ctx.fill();
+      ctx.restore();
+      grad(30, -174, 66, 28, '#626a76', '#20232a');     // ماسورة بضلع مهوّى
+      vents(38, -174, 5, 12, 5, 7, '#15181d');
+      rect(92, -172, 14, 24, '#23262c');
+      bore(102, -160, 7);
+      round(30, -148, 58, 10, 4, '#3d434c');            // قضيب الإخراج
+      ctx.save(); ctx.translate(-20, -174); ctx.rotate(-kick * 0.75);   // المطرقة
+      rect(-9, -22, 13, 26, '#79808c'); rect(-9, -22, 13, 5, '#a3abb6');
+      ctx.restore();
+      mx = 106; my = -160;
     } else if (shape === 'smg') {
+      /* رشاش صغير — غلاف مثقّب، مخزن منحني، وقارورة دم على الجنب تنبض */
       arm(-58, -108);
-      rect(-40, -140, 30, 58, '#3a3e46');
-      fingers(-42, -130);
-      rect(-34, -166, 116, 36, metal);
-      rect(-34, -166, 116, 6, metalL);
-      rect(-2, -130, 24, 54, '#1a1c20');              // المخزن
-      rect(74, -158, 52, 18, metalD);                 // الماسورة
-      rect(-38, -178, 26, 14, metalD);                // القبضة الخلفية
-      mx = 128; my = -149;
-    } else if (shape === 'shotgun') {
-      arm(-64, -108);
-      rect(-58, -150, 48, 62, wood);                  // الأخمص
-      fingers(-60, -140);
-      rect(-58, -150, 48, 7, '#8a5c33');
-      rect(-30, -166, 128, 32, metal);
-      rect(-30, -166, 128, 6, metalL);
-      rect(-16, -134, 96, 18, woodD);                 // المضخّة
-      rect(-16, -134, 96, 5, wood);
-      rect(88, -172, 30, 40, metalD);
-      ctx.fillStyle = '#0a0a0a'; ctx.beginPath(); ctx.arc(112, -152, 10, 0, TAU); ctx.fill();
-      mx = 122; my = -152;
-    } else if (shape === 'rifle' || shape === 'sniper' || shape === 'lmg') {
-      arm(-68, -110);
-      rect(-66, -152, 44, 64, '#3b3f47');             // الأخمص
-      fingers(-68, -142);
-      rect(-38, -168, 150, 32, metal);
-      rect(-38, -168, 150, 6, metalL);
-      rect(-6, -136, 26, 56, '#1c1e22');              // المخزن
-      rect(100, -160, 54, 16, metalD);
-      if (shape === 'sniper') {
-        rect(-4, -196, 92, 22, '#101215');
-        rect(-4, -196, 92, 5, '#2a2d33');
-        ctx.fillStyle = '#3aa0ff'; ctx.beginPath(); ctx.arc(80, -185, 8, 0, TAU); ctx.fill();
-        rect(20, -136, 10, 34, '#1c1e22');
+      round(-44, -146, 34, 62, 5, '#33373f');
+      grad(-44, -146, 34, 62, '#454b55', '#1d2025');
+      fingers(-46, -132);
+      round(-38, -186, 30, 40, 4, '#22252b');           // القبضة الخلفية
+      grad(-36, -172, 118, 38, '#4a505b', '#1e2127');   // الجسم
+      rect(-36, -172, 118, 5, '#727a86');
+      rivets(-26, -140, 5, 24, '#191c21');
+      ctx.save(); ctx.translate(0, 0);                   // مخزن منحني
+      ctx.fillStyle = '#181b20';
+      ctx.beginPath();
+      ctx.moveTo(-4, -134); ctx.lineTo(22, -134);
+      ctx.quadraticCurveTo(30, -100, 20, -74);
+      ctx.lineTo(-4, -74); ctx.quadraticCurveTo(4, -102, -4, -134);
+      ctx.fill();
+      ctx.fillStyle = '#2c3038'; ctx.fillRect(-2, -128, 4, 48);
+      ctx.restore();
+      grad(78, -164, 54, 22, '#3d434c', '#191c21');     // غلاف مثقّب
+      for (let i = 0; i < 4; i++) {
+        ctx.fillStyle = '#0d0f12';
+        ctx.beginPath(); ctx.arc(88 + i * 12, -153, 5, 0, TAU); ctx.fill();
       }
-      if (shape === 'lmg') {
-        rect(-8, -132, 66, 46, '#2a2d33');
-        rect(-8, -132, 66, 6, metalL);
-        rect(104, -176, 40, 10, metalD);
-      }
-      mx = 156; my = -152;
-    } else if (shape === 'plasma') {
-      arm(-64, -108);
-      rect(-60, -150, 42, 62, '#2c384a');
-      fingers(-62, -140);
-      rect(-36, -172, 140, 40, '#243247');
-      rect(-36, -172, 140, 7, '#3d5f80');
-      ctx.globalAlpha = 0.6 + Math.sin(g.time * 9) * 0.3;
-      rect(-6, -160, 84, 10, '#69f0ff');
-      rect(-6, -146, 84, 5, '#69f0ff');
+      rect(126, -160, 14, 14, '#23262c');
+      bore(134, -153, 5);
+      const vial = 0.5 + Math.sin(g.time * 3.2) * 0.5;   // قارورة الامتصاص
+      round(-16, -196, 46, 20, 8, '#1b1216');
+      ctx.globalAlpha = 0.55 + vial * 0.45;
+      round(-13, -193, 40 * (0.55 + vial * 0.45), 14, 6, '#e0324e');
       ctx.globalAlpha = 1;
-      ctx.fillStyle = '#0f1a24'; ctx.beginPath(); ctx.arc(112, -152, 20, 0, TAU); ctx.fill();
-      ctx.fillStyle = '#69f0ff'; ctx.beginPath(); ctx.arc(112, -152, 11, 0, TAU); ctx.fill();
-      mx = 130; my = -152;
+      round(-16, -196, 46, 5, 3, 'rgba(255,255,255,.16)');
+      mx = 142; my = -153;
+    } else if (shape === 'shotgun') {
+      /* شوتقن قتالي — مضخّة تتحرّك بعد كل طلقة، درع حراري، وأنبوب خراطيش */
+      const pump = -kick * 30;
+      arm(-64, -108);
+      round(-62, -154, 52, 68, 6, woodD);               // الأخمص
+      grad(-62, -154, 52, 68, '#8a5f36', '#3d2612');
+      rect(-62, -154, 52, 6, '#a9773f');
+      for (let i = 0; i < 4; i++) rect(-56, -146 + i * 16, 40, 2, 'rgba(0,0,0,.3)');
+      fingers(-60, -142);
+      round(-24, -136, 36, 15, 4, '#22252b');
+      grad(-34, -170, 132, 34, '#4e545f', '#1e2127');   // الجسم
+      rect(-34, -170, 132, 5, '#767e8a');
+      rivets(-22, -140, 4, 30, '#181b20');
+      grad(-34, -196, 90, 24, '#3a4049', '#1b1e23');    // درع حراري
+      vents(-26, -192, 6, 13, 6, 16, '#0e1013');
+      ctx.save(); ctx.translate(pump, 0);                // المضخّة
+      round(-14, -138, 96, 22, 7, '#5c3d20');
+      grad(-14, -138, 96, 22, '#7d5730', '#3b2411');
+      for (let i = 0; i < 6; i++) rect(-8 + i * 15, -138, 4, 22, 'rgba(0,0,0,.35)');
+      ctx.restore();
+      round(-14, -114, 110, 14, 6, '#2b2f36');          // أنبوب الخراطيش
+      rect(94, -176, 30, 42, '#23262c');
+      bore(112, -156, 11);
+      mx = 126; my = -156;
+    } else if (shape === 'rifle') {
+      /* رشاش هجومي — مقبض حمل، حاضنة مفتّحة، وغلاق يتحرّك ويقذف الظرف */
+      arm(-68, -110);
+      round(-72, -156, 48, 68, 5, '#3a3f47');           // أخمص قابل للتعديل
+      grad(-72, -156, 48, 68, '#4a505b', '#1e2126');
+      vents(-66, -146, 4, 15, 36, 3, '#15181d');
+      fingers(-68, -144);
+      round(-32, -138, 38, 16, 4, '#22252b');
+      grad(-40, -172, 150, 36, '#4c525d', '#1d2025');   // علبة المغلاق
+      rect(-40, -172, 150, 5, '#747c88');
+      round(-30, -200, 84, 20, 6, '#2e333b');           // مقبض الحمل
+      round(-24, -196, 72, 8, 4, '#161a1f');
+      ctx.fillStyle = '#181b20';                        // مخزن مستقيم مائل
+      ctx.beginPath();
+      ctx.moveTo(-4, -138); ctx.lineTo(26, -138);
+      ctx.lineTo(36, -72); ctx.lineTo(6, -72); ctx.closePath(); ctx.fill();
+      rect(2, -132, 4, 54, '#2c3038');
+      grad(64, -166, 68, 26, '#3f454e', '#191c21');     // الحاضنة
+      vents(72, -162, 5, 12, 6, 8, '#0d0f12');
+      rect(126, -164, 22, 20, '#23262c');
+      rect(146, -168, 12, 28, '#2b2f36');               // كابح الفوهة
+      bore(152, -154, 6);
+      ctx.save(); ctx.translate(-kick * 13, 0);          // مقبض التذخير
+      rect(84, -180, 26, 9, '#828a96');
+      ctx.restore();
+      if (kick > 0.25) {                                 // الظرف الطائر
+        const t = 1 - kick;
+        ctx.globalAlpha = kick;
+        ctx.fillStyle = '#d9a441';
+        ctx.save(); ctx.translate(70 + t * 44, -178 - t * 30); ctx.rotate(t * 5);
+        ctx.fillRect(-5, -3, 11, 6); ctx.restore();
+        ctx.globalAlpha = 1;
+      }
+      mx = 162; my = -154;
+    } else if (shape === 'sniper') {
+      /* قنّاص — منظار كبير بلمعة تمشي، حامل ثنائي، ومقبض غلاق بارز */
+      arm(-70, -110);
+      round(-78, -158, 54, 72, 6, '#2f3a33');           // أخمص تكتيكي
+      grad(-78, -158, 54, 72, '#41503f', '#1b231c');
+      round(-70, -186, 40, 30, 5, '#354034');           // مسند الخد
+      fingers(-72, -146);
+      round(-36, -140, 38, 16, 4, '#22252b');
+      grad(-44, -174, 156, 32, '#414d40', '#1a211b');   // الجسم
+      rect(-44, -174, 156, 5, '#67785f');
+      rivets(-30, -148, 5, 30, '#141a15');
+      round(-4, -140, 30, 58, 4, '#171b16');            // المخزن
+      grad(112, -166, 62, 18, '#3a453a', '#161b16');    // الماسورة الثقيلة
+      rect(168, -172, 20, 30, '#20261f');               // كابح الفوهة
+      vents(171, -168, 3, 6, 3, 22, '#0a0d0a');
+      bore(178, -157, 6);
+      round(-16, -212, 122, 26, 12, '#101512');         // المنظار
+      grad(-16, -212, 122, 26, '#2b332a', '#0d110c');
+      round(-22, -216, 22, 34, 6, '#161c15');
+      round(94, -218, 24, 38, 7, '#161c15');
+      ctx.fillStyle = '#2ea8ff';
+      ctx.beginPath(); ctx.arc(106, -199, 12, 0, TAU); ctx.fill();
+      ctx.fillStyle = '#bfe9ff';
+      ctx.beginPath(); ctx.arc(106, -199, 5, 0, TAU); ctx.fill();
+      const gl = (g.time * 0.55) % 1;                    // لمعة تمشي على العدسة
+      ctx.globalAlpha = 0.5;
+      ctx.fillStyle = '#eaffff';
+      ctx.beginPath();
+      ctx.ellipse(96 + gl * 20, -206 + gl * 12, 4, 11, -0.5, 0, TAU); ctx.fill();
+      ctx.globalAlpha = 1;
+      round(30, -206, 18, 8, 3, '#39443a');
+      ctx.save(); ctx.translate(0, 0);                   // مقبض الغلاق
+      ctx.rotate(rl * 0.9);
+      rect(34, -178, 12, 34, '#7d8a7b'); rect(34, -178, 12, 5, '#a9b6a6');
+      ctx.restore();
+      ctx.strokeStyle = '#22291f'; ctx.lineWidth = 7; ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(122, -148); ctx.lineTo(104, -104);   // حامل ثنائي
+      ctx.moveTo(122, -148); ctx.lineTo(146, -104); ctx.stroke();
+      mx = 192; my = -157;
+    } else if (shape === 'lmg') {
+      /* رشاش ثقيل — حزام ذخيرة يتمايل، ماسورة مضلّعة تحمرّ من الحرارة */
+      const hot = clamp(kick * 1.4, 0, 1);
+      arm(-70, -110);
+      round(-76, -158, 50, 72, 6, '#33373f');
+      grad(-76, -158, 50, 72, '#464c57', '#1c1f24');
+      fingers(-70, -146);
+      round(-36, -140, 38, 16, 4, '#22252b');
+      grad(-46, -176, 152, 40, '#4a505b', '#1b1e23');   // علبة ضخمة
+      rect(-46, -176, 152, 6, '#767e8a');
+      rivets(-34, -144, 6, 26, '#15181d');
+      round(-24, -208, 96, 20, 7, '#2c3038');           // مقبض الحمل
+      round(-18, -204, 84, 8, 4, '#14171b');
+      round(-16, -136, 74, 52, 6, '#20242a');           // صندوق الذخيرة
+      grad(-16, -136, 74, 52, '#2e343c', '#131619');
+      rivets(-6, -96, 4, 20, '#0d0f12');
+      const sway = Math.sin(g.time * 5) * 5 + kick * 9;  // الحزام يتمايل
+      ctx.save(); ctx.translate(0, sway);
+      for (let i = 0; i < 7; i++) {
+        const bx = 26 + i * 13, by = -128 + Math.sin(i * 0.8 + g.time * 5) * 4;
+        ctx.fillStyle = i % 2 ? '#c9a13f' : '#e0b850';
+        ctx.fillRect(bx, by, 10, 17);
+        ctx.fillStyle = '#8a6a24'; ctx.fillRect(bx, by + 13, 10, 4);
+      }
+      ctx.restore();
+      grad(102, -168, 66, 24, '#3d434c', '#181b20');    // ماسورة مضلّعة
+      for (let i = 0; i < 6; i++) rect(108 + i * 10, -170, 5, 28, '#282c33');
+      if (hot > 0.05) {                                  // احمرار الحرارة
+        ctx.globalAlpha = hot * 0.7;
+        grad(102, -168, 66, 24, '#ff6a2a', '#8a1f00');
+        ctx.globalAlpha = 1;
+      }
+      rect(162, -172, 18, 32, '#23262c');
+      bore(170, -157, 8);
+      ctx.strokeStyle = '#1c1f24'; ctx.lineWidth = 8; ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(118, -142); ctx.lineTo(98, -96);      // حامل ثنائي
+      ctx.moveTo(118, -142); ctx.lineTo(142, -96); ctx.stroke();
+      mx = 184; my = -157;
+    } else if (shape === 'plasma') {
+      /* مدفع البلازما — نواة عائمة، حلقتان تدوران، وملفّات تشحن */
+      arm(-64, -108);
+      round(-64, -154, 46, 66, 6, '#22303f');
+      grad(-64, -154, 46, 66, '#2f4358', '#141d27');
+      fingers(-62, -142);
+      round(-28, -138, 36, 15, 4, '#1a232d');
+      grad(-40, -178, 146, 44, '#26364b', '#101822');   // الجسم
+      rect(-40, -178, 146, 6, '#4a7096');
+      rivets(-28, -142, 5, 28, '#0c131a');
+      for (let i = 0; i < 3; i++) {                      // ملفّات الشحن
+        const pl = 0.35 + Math.abs(Math.sin(g.time * 6 - i * 0.7)) * 0.65;
+        ctx.globalAlpha = pl;
+        round(-14 + i * 34, -166, 24, 12, 5, '#69f0ff');
+        ctx.globalAlpha = 1;
+        round(-14 + i * 34, -166, 24, 3, 2, '#d8fbff');
+      }
+      round(-34, -196, 54, 18, 6, '#1b2836');           // خزّان
+      ctx.globalAlpha = 0.55 + Math.sin(g.time * 4) * 0.35;
+      round(-30, -192, 46, 10, 4, '#69f0ff');
+      ctx.globalAlpha = 1;
+      ctx.save(); ctx.translate(118, -156);              // النواة والحلقات
+      const cg = ctx.createRadialGradient(0, 0, 2, 0, 0, 26);
+      cg.addColorStop(0, '#eaffff'); cg.addColorStop(0.45, '#69f0ff');
+      cg.addColorStop(1, 'rgba(105,240,255,0)');
+      ctx.fillStyle = cg; ctx.beginPath(); ctx.arc(0, 0, 26, 0, TAU); ctx.fill();
+      ctx.strokeStyle = '#9df4ff'; ctx.lineWidth = 3;
+      for (let i = 0; i < 2; i++) {
+        ctx.save(); ctx.rotate(g.time * (i ? -2.2 : 1.7));
+        ctx.beginPath(); ctx.ellipse(0, 0, 22, 8 + i * 4, 0, 0, TAU); ctx.stroke();
+        ctx.restore();
+      }
+      ctx.fillStyle = '#0c1620'; ctx.beginPath(); ctx.arc(0, 0, 9, 0, TAU); ctx.fill();
+      ctx.fillStyle = '#c9fbff'; ctx.beginPath(); ctx.arc(0, 0, 5, 0, TAU); ctx.fill();
+      ctx.restore();
+      mx = 140; my = -156;
     } else if (shape === 'devblade') {
       // نصل المُطوِّر — نصل متوهّج
       const sw = clamp(g.recoil / 1.2, 0, 1);
@@ -11259,20 +11467,45 @@ const Renderer = {
       rect(96, -178, 10, 9, '#8fd0ff');                 // الشعيرة
       mx = 132; my = -158;
     } else if (shape === 'sawed') {
-      /* بندقية مقصوصة — ماسورتان قصيرتان */
+      /* مقصوصة — أخمص مبتور، ماسورتان قصيرتان تنكسران للتعبئة،
+         مطرقتان مكشوفتان، وخراطيش على الأخمص */
       arm(-58, -110);
-      rect(-52, -148, 42, 58, '#5a3a1e');               // أخمص مقصوص
-      fingers(-54, -138);
-      rect(-52, -148, 42, 6, '#8a5c33');
-      rect(-26, -168, 84, 20, metal);                   // الماسورة العليا
-      rect(-26, -146, 84, 20, metal);                   // الماسورة السفلى
-      rect(-26, -168, 84, 5, metalL);
-      rect(-26, -146, 84, 4, metalL);
-      ctx.fillStyle = '#0a0a0a';
-      ctx.beginPath(); ctx.arc(58, -158, 9, 0, TAU); ctx.fill();
-      ctx.beginPath(); ctx.arc(58, -136, 9, 0, TAU); ctx.fill();
-      rect(-14, -128, 40, 14, '#3a2817');               // القبضة الأمامية
-      mx = 70; my = -148;
+      ctx.fillStyle = woodD;                               // أخمص مقطوع بزاوية
+      ctx.beginPath();
+      ctx.moveTo(-64, -152); ctx.lineTo(-16, -152);
+      ctx.lineTo(-16, -84); ctx.lineTo(-44, -84);
+      ctx.closePath(); ctx.fill();
+      const wg = ctx.createLinearGradient(0, -152, 0, -84);
+      wg.addColorStop(0, '#8a5f36'); wg.addColorStop(1, '#3a2210');
+      ctx.fillStyle = wg; ctx.fill();
+      for (let i = 0; i < 3; i++) {                        // حلقات خراطيش
+        ctx.fillStyle = '#241708'; ctx.fillRect(-60, -146 + i * 19, 40, 15);
+        ctx.fillStyle = '#c9973f'; ctx.fillRect(-56, -144 + i * 19, 12, 11);
+        ctx.fillStyle = '#7a5a1e'; ctx.fillRect(-56, -136 + i * 19, 12, 3);
+      }
+      fingers(-56, -140);
+      round(-24, -136, 32, 15, 4, '#22252b');
+      ctx.save();
+      ctx.translate(-16, -158);
+      ctx.rotate(rl * 0.62);                               // تنكسر للأسفل عند التعبئة
+      grad(0, -16, 82, 24, '#5e656f', '#1e2126');
+      grad(0,  8, 82, 24, '#5e656f', '#1e2126');
+      rect(0, -16, 82, 4, '#868e9a');
+      rect(0,   8, 82, 4, '#868e9a');
+      rect(0, -16, 5, 48, '#2a2e35');
+      ctx.fillStyle = '#07080a';
+      ctx.beginPath(); ctx.arc(80, -4, 9, 0, TAU); ctx.fill();
+      ctx.beginPath(); ctx.arc(80, 20, 9, 0, TAU); ctx.fill();
+      ctx.strokeStyle = '#6e7681'; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(80, -4, 9, 0, TAU); ctx.stroke();
+      ctx.beginPath(); ctx.arc(80, 20, 9, 0, TAU); ctx.stroke();
+      ctx.restore();
+      for (let i = 0; i < 2; i++) {                        // مطرقتان مكشوفتان
+        ctx.save(); ctx.translate(-14, -176 + i * 10); ctx.rotate(-kick * 0.8);
+        rect(-10, -16, 12, 20, '#7d858f'); rect(-10, -16, 12, 4, '#a8b0ba');
+        ctx.restore();
+      }
+      mx = 72; my = -160;
     } else if (shape === 'webgun') {
       /* شوتقن الخيوط — أسطوانة حرير وفوهة شبكية */
       arm(-62, -108);
@@ -11559,6 +11792,135 @@ const Renderer = {
       }
       ctx.restore();
       mx = 82; my = -150;
+    } else if (shape === 'dragonfang') {
+      /* نصل التنين — نصل مشتعل بحرشفات، مقبض فكّ تنين، وجمر يتطاير */
+      const sw = clamp((g.recoil || 0) / 1.2, 0, 1);
+      const fl = 0.55 + Math.sin(g.time * 7) * 0.45;
+      ctx.save();
+      ctx.rotate(-0.5 + sw * 1.1);
+      arm(-48, -104);
+      round(-34, -152, 34, 66, 6, '#3a1408');            // المقبض
+      grad(-34, -152, 34, 66, '#6b2a12', '#2a0d05');
+      for (let i = 0; i < 4; i++) rect(-30, -144 + i * 15, 26, 3, '#1a0703');
+      fingers(-36, -138);
+      ctx.fillStyle = '#c9962f';                          // حارس على شكل فك
+      ctx.beginPath();
+      ctx.moveTo(-40, -168); ctx.lineTo(8, -168);
+      ctx.lineTo(16, -152); ctx.lineTo(-2, -146);
+      ctx.lineTo(-40, -152); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = '#8a6318';
+      ctx.beginPath(); ctx.moveTo(-40,-168); ctx.lineTo(8,-168); ctx.lineTo(6,-162); ctx.lineTo(-40,-162); ctx.fill();
+      ctx.fillStyle = '#ff4d2a';                           // عين في المقبض
+      ctx.beginPath(); ctx.arc(-14, -158, 5, 0, TAU); ctx.fill();
+      ctx.fillStyle = '#ffd06a';
+      ctx.beginPath(); ctx.arc(-14, -158, 2, 0, TAU); ctx.fill();
+      const bg = ctx.createLinearGradient(0, -240, 0, -160);   // النصل
+      bg.addColorStop(0, '#fff0d0'); bg.addColorStop(0.5, '#ff9430'); bg.addColorStop(1, '#c23a10');
+      ctx.fillStyle = bg;
+      ctx.beginPath();
+      ctx.moveTo(-6, -168); ctx.lineTo(10, -172);
+      ctx.lineTo(112, -256); ctx.lineTo(124, -240);
+      ctx.lineTo(22, -156); ctx.lineTo(-6, -160); ctx.closePath(); ctx.fill();
+      ctx.strokeStyle = '#7a1c00'; ctx.lineWidth = 2; ctx.stroke();
+      ctx.globalAlpha = 0.5 + fl * 0.5;                    // حرشفات متوهّجة
+      ctx.fillStyle = '#ffe9a8';
+      for (let i = 0; i < 7; i++) {
+        const t = i / 7;
+        ctx.beginPath();
+        ctx.ellipse(4 + t * 106, -168 - t * 78, 5, 3, -0.68, 0, TAU); ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+      for (let i = 0; i < 5; i++) {                         // جمر يتطاير
+        const t = (g.time * 1.6 + i * 0.2) % 1;
+        ctx.globalAlpha = (1 - t) * 0.9;
+        ctx.fillStyle = i % 2 ? '#ff7a1f' : '#ffd06a';
+        ctx.beginPath();
+        ctx.arc(30 + i * 20 + t * 14, -186 - i * 14 - t * 34, 3.4 - t * 2, 0, TAU); ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+      ctx.restore();
+      mx = 120; my = -244;
+    } else if (shape === 'doomshot') {
+      /* شوتقن الهلاك — أسطوانة ثمانية، فوهة مشقوقة، وعروق حمراء تنبض */
+      const pulse = 0.45 + Math.abs(Math.sin(g.time * 4)) * 0.55;
+      arm(-64, -108);
+      round(-64, -156, 50, 70, 7, '#2a1016');
+      grad(-64, -156, 50, 70, '#4a1a24', '#1a0508');
+      for (let i = 0; i < 4; i++) rect(-58, -148 + i * 16, 38, 3, '#12050a');
+      fingers(-62, -144);
+      round(-26, -138, 36, 16, 4, '#1c0a0e');
+      grad(-36, -180, 140, 46, '#3d1620', '#160508');      // الجسم
+      rect(-36, -180, 140, 6, '#7a2c3c');
+      rivets(-24, -142, 5, 28, '#0d0306');
+      ctx.strokeStyle = '#ff4d6d'; ctx.lineWidth = 3; ctx.lineCap = 'round';
+      ctx.globalAlpha = pulse;                              // عروق تنبض
+      for (let i = 0; i < 3; i++) {
+        ctx.beginPath();
+        ctx.moveTo(-20 + i * 40, -176);
+        ctx.quadraticCurveTo(-4 + i * 40, -158, -18 + i * 40, -138);
+        ctx.stroke();
+      }
+      ctx.globalAlpha = 1;
+      ctx.save(); ctx.translate(48, -157); ctx.rotate(g.time * 0.5);   // أسطوانة ثمانية
+      ctx.fillStyle = '#4e1c26'; ctx.beginPath(); ctx.arc(0, 0, 27, 0, TAU); ctx.fill();
+      ctx.strokeStyle = '#8a3446'; ctx.lineWidth = 3; ctx.stroke();
+      for (let i = 0; i < 8; i++) {
+        const a = i * TAU / 8;
+        ctx.fillStyle = '#140406';
+        ctx.beginPath(); ctx.arc(Math.cos(a) * 17, Math.sin(a) * 17, 5.6, 0, TAU); ctx.fill();
+        ctx.globalAlpha = pulse * 0.8; ctx.fillStyle = '#ff4d6d';
+        ctx.beginPath(); ctx.arc(Math.cos(a) * 17, Math.sin(a) * 17, 2.6, 0, TAU); ctx.fill();
+        ctx.globalAlpha = 1;
+      }
+      ctx.restore();
+      grad(84, -172, 62, 30, '#4a1c26', '#180508');         // فوهة مشقوقة
+      for (let i = 0; i < 4; i++) rect(92 + i * 14, -172, 6, 30, '#2a0a10');
+      ctx.fillStyle = '#160406';
+      ctx.beginPath(); ctx.moveTo(146, -178); ctx.lineTo(172, -168);
+      ctx.lineTo(172, -146); ctx.lineTo(146, -136); ctx.closePath(); ctx.fill();
+      ctx.globalAlpha = pulse; bore(164, -157, 11); ctx.globalAlpha = 1;
+      mx = 178; my = -157;
+    } else if (shape === 'soulripper') {
+      /* رشاش الأرواح — قفص أرواح تدور فيه كرات، وماسورة بنفسجية */
+      const spin = g.time * 1.9;
+      arm(-70, -110);
+      round(-74, -158, 50, 72, 6, '#241a35');
+      grad(-74, -158, 50, 72, '#3a2a55', '#140e20');
+      fingers(-70, -146);
+      round(-34, -140, 38, 16, 4, '#1a1228');
+      grad(-44, -178, 150, 42, '#2e2148', '#120c1e');       // الجسم
+      rect(-44, -178, 150, 6, '#6b4fa8');
+      rivets(-32, -144, 6, 26, '#0c0714');
+      round(-22, -206, 92, 20, 7, '#241a38');               // مقبض علوي
+      round(-16, -202, 80, 8, 4, '#100a1a');
+      ctx.save(); ctx.translate(20, -156);                   // قفص الأرواح
+      ctx.strokeStyle = '#7a5cc0'; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.ellipse(0, 0, 30, 22, 0, 0, TAU); ctx.stroke();
+      for (let i = 0; i < 4; i++) {          // أضلاع القفص — نصف قطر موجب دائماً
+        ctx.beginPath();
+        ctx.ellipse(0, 0, Math.max(3, 30 * Math.cos(i * 0.42)), 22, 0, 0, TAU); ctx.stroke();
+      }
+      for (let i = 0; i < 4; i++) {                          // أرواح تدور
+        const a = spin + i * TAU / 4;
+        const sx = Math.cos(a) * 20, sy = Math.sin(a) * 13;
+        const sg = ctx.createRadialGradient(sx, sy, 1, sx, sy, 11);
+        sg.addColorStop(0, '#f0e2ff'); sg.addColorStop(0.5, '#b06bff');
+        sg.addColorStop(1, 'rgba(176,107,255,0)');
+        ctx.fillStyle = sg;
+        ctx.beginPath(); ctx.arc(sx, sy, 11, 0, TAU); ctx.fill();
+      }
+      ctx.restore();
+      grad(96, -168, 70, 24, '#33254f', '#150e22');          // ماسورة
+      for (let i = 0; i < 5; i++) {
+        ctx.globalAlpha = 0.35 + Math.abs(Math.sin(g.time * 6 - i * 0.6)) * 0.65;
+        rect(102 + i * 13, -166, 6, 20, '#b06bff');
+        ctx.globalAlpha = 1;
+      }
+      rect(160, -172, 18, 32, '#221838');
+      ctx.fillStyle = '#0a0612'; ctx.beginPath(); ctx.arc(170, -157, 9, 0, TAU); ctx.fill();
+      ctx.strokeStyle = '#b06bff'; ctx.lineWidth = 2.4;
+      ctx.beginPath(); ctx.arc(170, -157, 9, 0, TAU); ctx.stroke();
+      mx = 182; my = -157;
     } else if (shape === 'flamer') {
       /* قاذف الجحيم — خزّان وقود، خرطوم، وفوهة بشعلة صغيرة */
       arm(-64, -108);
@@ -15431,7 +15793,7 @@ const Touch = {
    70_shell.js : الموقع، القائمة، الإعدادات، الحفظ والتحميل
    ============================================================ */
 
-const VERSION = '2.11.0';
+const VERSION = '2.12.0';
 const BUILD_DATE = '٢٨ أغسطس ٢٠٢٦';
 const BUILD_DATE_EN = '26 August 2026';
 
