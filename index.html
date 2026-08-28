@@ -2645,7 +2645,7 @@ const MONSTERS = {
 const MANOR_ROUNDS = [
   { n: 1,  comp: { zombie: 10 },                                     hpMul: 1.00, spdMul: 1.00, dmgMul: 1.00, spawnGap: 2.2, maxAlive: 14 },
   { n: 2,  comp: { zombie: 6, wolf: 4 },                             hpMul: 1.35, spdMul: 1.06, dmgMul: 1.10, spawnGap: 2.0, maxAlive: 14 },
-  { n: 3,  comp: { zombie: 4, wolf: 3, bat: 3 },                     hpMul: 1.80, spdMul: 1.12, dmgMul: 1.20, spawnGap: 1.7, maxAlive: 14 },
+  { n: 3,  comp: { zombie: 4, wolf: 3, bat: 3, brute:1 },                     hpMul: 1.80, spdMul: 1.12, dmgMul: 1.20, spawnGap: 1.7, maxAlive: 14 },
   { n: 4,  comp: { zombie: 3, wolf: 3, bat: 2, brute: 2 },           hpMul: 2.40, spdMul: 1.18, dmgMul: 1.35, spawnGap: 1.5, maxAlive: 15 },
   { n: 5,  comp: { zombie: 2, wolf: 3, bat: 2, brute: 2, alpha: 1 }, hpMul: 3.10, spdMul: 1.25, dmgMul: 1.55, spawnGap: 1.3, maxAlive: 15 },
 ];
@@ -2653,7 +2653,7 @@ const MANOR_ROUNDS = [
 const CELLAR_ROUNDS = [
   { n: 1,  comp: { rat: 8, spider: 3 },                                          hpMul: 1.6, spdMul: 1.00, dmgMul: 1.20, spawnGap: 1.6, maxAlive: 16 },
   { n: 2,  comp: { rat: 6, spider: 5, crawler: 2 },                              hpMul: 1.9, spdMul: 1.04, dmgMul: 1.30, spawnGap: 1.5, maxAlive: 16 },
-  { n: 3,  comp: { rat: 4, spider: 6, crawler: 4, bat: 2 },                      hpMul: 2.2, spdMul: 1.08, dmgMul: 1.40, spawnGap: 1.4, maxAlive: 17 },
+  { n: 3,  comp: { rat: 4, spider: 6, crawler: 4, bat: 2, guardian:1 },                      hpMul: 2.2, spdMul: 1.08, dmgMul: 1.40, spawnGap: 1.4, maxAlive: 17 },
   { n: 4,  comp: { rat: 6, spider: 5, crawler: 4, wraith: 2 },                   hpMul: 2.6, spdMul: 1.12, dmgMul: 1.50, spawnGap: 1.3, maxAlive: 17 },
   { n: 5,  comp: { spider: 5, crawler: 6, wraith: 4, guardian: 1 },              hpMul: 3.0, spdMul: 1.16, dmgMul: 1.62, spawnGap: 1.2, maxAlive: 18 },
   { n: 6,  comp: { rat: 8, crawler: 5, wraith: 5, guardian: 2 },                 hpMul: 3.5, spdMul: 1.20, dmgMul: 1.74, spawnGap: 1.1, maxAlive: 18 },
@@ -2666,9 +2666,9 @@ const CELLAR_ROUNDS = [
 const NEST_ROUNDS = [
   { n:1,  comp:{ spiderling:14 },                                              hpMul:2.2, spdMul:1.00, dmgMul:1.35, spawnGap:1.4, maxAlive:18 },
   { n:2,  comp:{ spiderling:12, weaver:4 },                                    hpMul:2.5, spdMul:1.04, dmgMul:1.45, spawnGap:1.3, maxAlive:18 },
-  { n:3,  comp:{ spiderling:10, weaver:6, venomite:3 },                        hpMul:2.8, spdMul:1.08, dmgMul:1.55, spawnGap:1.2, maxAlive:19 },
+  { n:3,  comp:{ spiderling:10, weaver:6, venomite:3, broodmom:1 },                        hpMul:2.8, spdMul:1.08, dmgMul:1.55, spawnGap:1.2, maxAlive:19 },
   { n:4,  comp:{ spiderling:8, weaver:6, venomite:6 },                         hpMul:3.2, spdMul:1.12, dmgMul:1.66, spawnGap:1.1, maxAlive:19 },
-  { n:5,  comp:{ weaver:6, venomite:7, frostbite:4 },                          hpMul:3.7, spdMul:1.16, dmgMul:1.78, spawnGap:1.05,maxAlive:20 },
+  { n:5,  comp:{ weaver:6, venomite:7, frostbite:4, broodmom:1 },                          hpMul:3.7, spdMul:1.16, dmgMul:1.78, spawnGap:1.05,maxAlive:20 },
   { n:6,  comp:{ spiderling:10, venomite:6, frostbite:6, ember:2 },            hpMul:4.2, spdMul:1.20, dmgMul:1.90, spawnGap:1.0, maxAlive:20 },
   { n:7,  comp:{ venomite:7, frostbite:7, ember:6, broodmom:1 },               hpMul:4.8, spdMul:1.24, dmgMul:2.02, spawnGap:0.95,maxAlive:21 },
   { n:8,  comp:{ spiderling:12, frostbite:6, ember:8, broodmom:2 },            hpMul:5.5, spdMul:1.28, dmgMul:2.15, spawnGap:0.88,maxAlive:21 },
@@ -2679,9 +2679,9 @@ const NEST_ROUNDS = [
 const CULT_ROUNDS = [
   { n:1,  comp:{ acolyte:12 },                                                   hpMul:2.6, spdMul:1.00, dmgMul:1.50, spawnGap:1.5, maxAlive:16 },
   { n:2,  comp:{ acolyte:10, zealot:5 },                                         hpMul:2.9, spdMul:1.04, dmgMul:1.60, spawnGap:1.4, maxAlive:17 },
-  { n:3,  comp:{ acolyte:8, zealot:8, censerman:3 },                             hpMul:3.2, spdMul:1.08, dmgMul:1.70, spawnGap:1.3, maxAlive:17 },
+  { n:3,  comp:{ acolyte:8, zealot:8, censerman:3, inquisitor:1 },                             hpMul:3.2, spdMul:1.08, dmgMul:1.70, spawnGap:1.3, maxAlive:17 },
   { n:4,  comp:{ acolyte:8, zealot:8, censerman:6 },                             hpMul:3.6, spdMul:1.12, dmgMul:1.82, spawnGap:1.2, maxAlive:18 },
-  { n:5,  comp:{ zealot:9, censerman:6, flagellant:4 },                          hpMul:4.1, spdMul:1.16, dmgMul:1.94, spawnGap:1.15,maxAlive:18 },
+  { n:5,  comp:{ zealot:9, censerman:6, flagellant:4, inquisitor:1 },                          hpMul:4.1, spdMul:1.16, dmgMul:1.94, spawnGap:1.15,maxAlive:18 },
   { n:6,  comp:{ acolyte:10, censerman:7, flagellant:6, inquisitor:1 },          hpMul:4.7, spdMul:1.20, dmgMul:2.06, spawnGap:1.05,maxAlive:19 },
   { n:7,  comp:{ zealot:10, censerman:7, flagellant:7, inquisitor:2 },           hpMul:5.4, spdMul:1.24, dmgMul:2.20, spawnGap:0.98,maxAlive:19 },
   { n:8,  comp:{ acolyte:12, flagellant:8, inquisitor:3 },                       hpMul:6.2, spdMul:1.28, dmgMul:2.34, spawnGap:0.90,maxAlive:20 },
@@ -2690,81 +2690,81 @@ const CULT_ROUNDS = [
 ];
 
 const LAB_ROUNDS = [
-  { n:1,  comp:{ subject:11 },                                                    hpMul:3.0, spdMul:1.00, dmgMul:1.60, spawnGap:1.5, maxAlive:15 },
-  { n:2,  comp:{ subject:9, orderly:5, wretch:1 },                                hpMul:3.3, spdMul:1.04, dmgMul:1.70, spawnGap:1.4, maxAlive:16 },
-  { n:3,  comp:{ subject:8, orderly:7, twitcher:4 },                              hpMul:3.7, spdMul:1.08, dmgMul:1.80, spawnGap:1.3, maxAlive:17 },
-  { n:4,  comp:{ orderly:8, twitcher:7, vatborn:2, wretch:1 },                    hpMul:4.1, spdMul:1.12, dmgMul:1.92, spawnGap:1.2, maxAlive:17 },
-  { n:5,  comp:{ subject:8, twitcher:8, vatborn:5 },                              hpMul:4.6, spdMul:1.16, dmgMul:2.04, spawnGap:1.12,maxAlive:18 },
-  { n:6,  comp:{ orderly:9, twitcher:8, vatborn:6, surgeon:1, wretch:2 },         hpMul:5.2, spdMul:1.20, dmgMul:2.16, spawnGap:1.04,maxAlive:18 },
-  { n:7,  comp:{ subject:10, vatborn:7, surgeon:2 },                              hpMul:5.9, spdMul:1.24, dmgMul:2.30, spawnGap:0.96,maxAlive:19 },
-  { n:8,  comp:{ orderly:10, twitcher:9, vatborn:7, surgeon:3, wretch:2 },        hpMul:6.7, spdMul:1.28, dmgMul:2.44, spawnGap:0.88,maxAlive:19 },
-  { n:9,  comp:{ twitcher:11, vatborn:9, surgeon:4 },                             hpMul:7.6, spdMul:1.32, dmgMul:2.58, spawnGap:0.80,maxAlive:20 },
-  { n:10, comp:{ subject:8, vatborn:8, surgeon:5, matron:1, wretch:3 },           hpMul:8.8, spdMul:1.36, dmgMul:2.76, spawnGap:0.74,maxAlive:21 },
+  { n:1,  comp:{ subject:11 },                                                    hpMul:2.25, spdMul:1.00, dmgMul:1.36, spawnGap:1.5, maxAlive:15 },
+  { n:2,  comp:{ subject:9, orderly:5, wretch:1 },                                hpMul:2.47, spdMul:1.04, dmgMul:1.44, spawnGap:1.4, maxAlive:16 },
+  { n:3,  comp:{ subject:8, orderly:7, twitcher:4, surgeon:1 },                              hpMul:2.78, spdMul:1.08, dmgMul:1.53, spawnGap:1.3, maxAlive:17 },
+  { n:4,  comp:{ orderly:8, twitcher:7, vatborn:2, wretch:1 },                    hpMul:3.07, spdMul:1.12, dmgMul:1.63, spawnGap:1.2, maxAlive:17 },
+  { n:5,  comp:{ subject:8, twitcher:8, vatborn:5, surgeon:1 },                              hpMul:3.45, spdMul:1.16, dmgMul:1.73, spawnGap:1.12,maxAlive:18 },
+  { n:6,  comp:{ orderly:9, twitcher:8, vatborn:6, surgeon:1, wretch:2 },         hpMul:3.9, spdMul:1.20, dmgMul:1.84, spawnGap:1.04,maxAlive:18 },
+  { n:7,  comp:{ subject:10, vatborn:7, surgeon:2 },                              hpMul:4.43, spdMul:1.24, dmgMul:1.95, spawnGap:0.96,maxAlive:19 },
+  { n:8,  comp:{ orderly:10, twitcher:9, vatborn:7, surgeon:3, wretch:2 },        hpMul:5.03, spdMul:1.28, dmgMul:2.07, spawnGap:0.88,maxAlive:19 },
+  { n:9,  comp:{ twitcher:11, vatborn:9, surgeon:4 },                             hpMul:5.7, spdMul:1.32, dmgMul:2.19, spawnGap:0.80,maxAlive:20 },
+  { n:10, comp:{ subject:8, vatborn:8, surgeon:5, matron:1, wretch:3 },           hpMul:6.6, spdMul:1.36, dmgMul:2.35, spawnGap:0.74,maxAlive:21 },
 ];
 
 const FLOOD_ROUNDS = [
-  { n:1,  comp:{ floater:11 },                                          hpMul:3.4, spdMul:1.00, dmgMul:1.72, spawnGap:1.45,maxAlive:16 },
-  { n:2,  comp:{ floater:9, leech:6 },                                  hpMul:3.7, spdMul:1.04, dmgMul:1.82, spawnGap:1.36,maxAlive:16 },
-  { n:3,  comp:{ floater:8, leech:7, diver:4 },                         hpMul:4.1, spdMul:1.08, dmgMul:1.94, spawnGap:1.26,maxAlive:17 },
-  { n:4,  comp:{ leech:9, diver:7, bloated:2 },                         hpMul:4.6, spdMul:1.12, dmgMul:2.06, spawnGap:1.16,maxAlive:17 },
-  { n:5,  comp:{ floater:9, diver:8, bloated:4 },                       hpMul:5.1, spdMul:1.16, dmgMul:2.18, spawnGap:1.08,maxAlive:18 },
-  { n:6,  comp:{ leech:10, diver:9, bloated:5, warden6:1 },             hpMul:5.8, spdMul:1.20, dmgMul:2.32, spawnGap:1.00,maxAlive:18 },
-  { n:7,  comp:{ floater:10, diver:10, bloated:6, warden6:2 },          hpMul:6.6, spdMul:1.24, dmgMul:2.46, spawnGap:0.92,maxAlive:19 },
-  { n:8,  comp:{ leech:12, diver:10, bloated:7, warden6:3 },            hpMul:7.5, spdMul:1.28, dmgMul:2.60, spawnGap:0.85,maxAlive:19 },
-  { n:9,  comp:{ diver:12, bloated:9, warden6:4 },                      hpMul:8.5, spdMul:1.32, dmgMul:2.76, spawnGap:0.78,maxAlive:20 },
-  { n:10, comp:{ floater:9, diver:9, bloated:8, warden6:5, drowned:1 }, hpMul:9.8, spdMul:1.36, dmgMul:2.94, spawnGap:0.72,maxAlive:21 },
+  { n:1,  comp:{ floater:11 },                                          hpMul:2.55, spdMul:1.00, dmgMul:1.46, spawnGap:1.45,maxAlive:16 },
+  { n:2,  comp:{ floater:9, leech:6 },                                  hpMul:2.78, spdMul:1.04, dmgMul:1.55, spawnGap:1.36,maxAlive:16 },
+  { n:3,  comp:{ floater:8, leech:7, diver:4, warden6:1 },                         hpMul:3.07, spdMul:1.08, dmgMul:1.65, spawnGap:1.26,maxAlive:17 },
+  { n:4,  comp:{ leech:9, diver:7, bloated:2 },                         hpMul:3.45, spdMul:1.12, dmgMul:1.75, spawnGap:1.16,maxAlive:17 },
+  { n:5,  comp:{ floater:9, diver:8, bloated:4, warden6:1 },                       hpMul:3.82, spdMul:1.16, dmgMul:1.85, spawnGap:1.08,maxAlive:18 },
+  { n:6,  comp:{ leech:10, diver:9, bloated:5, warden6:1 },             hpMul:4.35, spdMul:1.20, dmgMul:1.97, spawnGap:1.00,maxAlive:18 },
+  { n:7,  comp:{ floater:10, diver:10, bloated:6, warden6:2 },          hpMul:4.95, spdMul:1.24, dmgMul:2.09, spawnGap:0.92,maxAlive:19 },
+  { n:8,  comp:{ leech:12, diver:10, bloated:7, warden6:3 },            hpMul:5.62, spdMul:1.28, dmgMul:2.21, spawnGap:0.85,maxAlive:19 },
+  { n:9,  comp:{ diver:12, bloated:9, warden6:4 },                      hpMul:6.38, spdMul:1.32, dmgMul:2.35, spawnGap:0.78,maxAlive:20 },
+  { n:10, comp:{ floater:9, diver:9, bloated:8, warden6:5, drowned:1 }, hpMul:7.35, spdMul:1.36, dmgMul:2.5, spawnGap:0.72,maxAlive:21 },
 ];
 
 const GROVE_ROUNDS = [
-  { n:1,  comp:{ sporeling:11 },                                                    hpMul:3.8, spdMul:1.00, dmgMul:1.84, spawnGap:1.42,maxAlive:16 },
-  { n:2,  comp:{ sporeling:9, bramble:6 },                                          hpMul:4.2, spdMul:1.04, dmgMul:1.94, spawnGap:1.32,maxAlive:16 },
-  { n:3,  comp:{ sporeling:8, bramble:8, fungoid:3 },                               hpMul:4.6, spdMul:1.08, dmgMul:2.06, spawnGap:1.22,maxAlive:17 },
-  { n:4,  comp:{ bramble:9, fungoid:7, bloomer:2 },                                 hpMul:5.1, spdMul:1.12, dmgMul:2.18, spawnGap:1.12,maxAlive:17 },
-  { n:5,  comp:{ sporeling:9, fungoid:8, bloomer:4 },                               hpMul:5.7, spdMul:1.16, dmgMul:2.30, spawnGap:1.04,maxAlive:18 },
-  { n:6,  comp:{ bramble:10, fungoid:9, bloomer:5, thornguard:1 },                  hpMul:6.4, spdMul:1.20, dmgMul:2.44, spawnGap:0.96,maxAlive:18 },
-  { n:7,  comp:{ sporeling:10, bramble:10, bloomer:6, thornguard:2 },               hpMul:7.3, spdMul:1.24, dmgMul:2.58, spawnGap:0.88,maxAlive:19 },
-  { n:8,  comp:{ fungoid:12, bloomer:7, thornguard:3 },                             hpMul:8.2, spdMul:1.28, dmgMul:2.72, spawnGap:0.82,maxAlive:19 },
-  { n:9,  comp:{ bramble:12, fungoid:10, bloomer:9, thornguard:4 },                 hpMul:9.3, spdMul:1.32, dmgMul:2.88, spawnGap:0.75,maxAlive:20 },
-  { n:10, comp:{ sporeling:9, fungoid:9, bloomer:8, thornguard:5, rootmother:1 },   hpMul:10.7,spdMul:1.36, dmgMul:3.06, spawnGap:0.70,maxAlive:21 },
+  { n:1,  comp:{ sporeling:11 },                                                    hpMul:2.85, spdMul:1.00, dmgMul:1.56, spawnGap:1.42,maxAlive:16 },
+  { n:2,  comp:{ sporeling:9, bramble:6 },                                          hpMul:3.15, spdMul:1.04, dmgMul:1.65, spawnGap:1.32,maxAlive:16 },
+  { n:3,  comp:{ sporeling:8, bramble:8, fungoid:3, thornguard:1 },                               hpMul:3.45, spdMul:1.08, dmgMul:1.75, spawnGap:1.22,maxAlive:17 },
+  { n:4,  comp:{ bramble:9, fungoid:7, bloomer:2 },                                 hpMul:3.82, spdMul:1.12, dmgMul:1.85, spawnGap:1.12,maxAlive:17 },
+  { n:5,  comp:{ sporeling:9, fungoid:8, bloomer:4, thornguard:1 },                               hpMul:4.28, spdMul:1.16, dmgMul:1.95, spawnGap:1.04,maxAlive:18 },
+  { n:6,  comp:{ bramble:10, fungoid:9, bloomer:5, thornguard:1 },                  hpMul:4.8, spdMul:1.20, dmgMul:2.07, spawnGap:0.96,maxAlive:18 },
+  { n:7,  comp:{ sporeling:10, bramble:10, bloomer:6, thornguard:2 },               hpMul:5.47, spdMul:1.24, dmgMul:2.19, spawnGap:0.88,maxAlive:19 },
+  { n:8,  comp:{ fungoid:12, bloomer:7, thornguard:3 },                             hpMul:6.15, spdMul:1.28, dmgMul:2.31, spawnGap:0.82,maxAlive:19 },
+  { n:9,  comp:{ bramble:12, fungoid:10, bloomer:9, thornguard:4 },                 hpMul:6.98, spdMul:1.32, dmgMul:2.45, spawnGap:0.75,maxAlive:20 },
+  { n:10, comp:{ sporeling:9, fungoid:9, bloomer:8, thornguard:5, rootmother:1 },   hpMul:8.02,spdMul:1.36, dmgMul:2.6, spawnGap:0.70,maxAlive:21 },
 ];
 
 const TOWER_ROUNDS = [
-  { n:1,  comp:{ gazer:11 },                                                 hpMul:4.4, spdMul:1.02, dmgMul:2.00, spawnGap:1.40,maxAlive:16 },
-  { n:2,  comp:{ gazer:9, ringer:6 },                                        hpMul:4.9, spdMul:1.06, dmgMul:2.12, spawnGap:1.30,maxAlive:16 },
-  { n:3,  comp:{ gazer:8, ringer:8, lensman:3 },                             hpMul:5.4, spdMul:1.10, dmgMul:2.24, spawnGap:1.20,maxAlive:17 },
-  { n:4,  comp:{ ringer:9, lensman:7, chime:2 },                             hpMul:6.0, spdMul:1.14, dmgMul:2.38, spawnGap:1.10,maxAlive:17 },
-  { n:5,  comp:{ gazer:9, lensman:8, chime:4 },                              hpMul:6.7, spdMul:1.18, dmgMul:2.52, spawnGap:1.02,maxAlive:18 },
-  { n:6,  comp:{ ringer:10, lensman:9, chime:5, warden8:1 },                 hpMul:7.5, spdMul:1.22, dmgMul:2.66, spawnGap:0.94,maxAlive:18 },
-  { n:7,  comp:{ gazer:10, ringer:10, chime:6, warden8:2 },                  hpMul:8.5, spdMul:1.26, dmgMul:2.82, spawnGap:0.86,maxAlive:19 },
-  { n:8,  comp:{ lensman:12, chime:7, warden8:3 },                           hpMul:9.6, spdMul:1.30, dmgMul:2.98, spawnGap:0.80,maxAlive:19 },
-  { n:9,  comp:{ ringer:12, lensman:10, chime:9, warden8:4 },                hpMul:10.9,spdMul:1.34, dmgMul:3.16, spawnGap:0.73,maxAlive:20 },
-  { n:10, comp:{ gazer:9, lensman:9, chime:8, warden8:5, starseer:1 },       hpMul:12.4,spdMul:1.38, dmgMul:3.36, spawnGap:0.68,maxAlive:21 },
+  { n:1,  comp:{ gazer:11 },                                                 hpMul:3.3, spdMul:1.02, dmgMul:1.7, spawnGap:1.40,maxAlive:16 },
+  { n:2,  comp:{ gazer:9, ringer:6 },                                        hpMul:3.68, spdMul:1.06, dmgMul:1.8, spawnGap:1.30,maxAlive:16 },
+  { n:3,  comp:{ gazer:8, ringer:8, lensman:3, warden8:1 },                             hpMul:4.05, spdMul:1.10, dmgMul:1.9, spawnGap:1.20,maxAlive:17 },
+  { n:4,  comp:{ ringer:9, lensman:7, chime:2 },                             hpMul:4.5, spdMul:1.14, dmgMul:2.02, spawnGap:1.10,maxAlive:17 },
+  { n:5,  comp:{ gazer:9, lensman:8, chime:4, warden8:1 },                              hpMul:5.03, spdMul:1.18, dmgMul:2.14, spawnGap:1.02,maxAlive:18 },
+  { n:6,  comp:{ ringer:10, lensman:9, chime:5, warden8:1 },                 hpMul:5.62, spdMul:1.22, dmgMul:2.26, spawnGap:0.94,maxAlive:18 },
+  { n:7,  comp:{ gazer:10, ringer:10, chime:6, warden8:2 },                  hpMul:6.38, spdMul:1.26, dmgMul:2.4, spawnGap:0.86,maxAlive:19 },
+  { n:8,  comp:{ lensman:12, chime:7, warden8:3 },                           hpMul:7.2, spdMul:1.30, dmgMul:2.53, spawnGap:0.80,maxAlive:19 },
+  { n:9,  comp:{ ringer:12, lensman:10, chime:9, warden8:4 },                hpMul:8.18,spdMul:1.34, dmgMul:2.69, spawnGap:0.73,maxAlive:20 },
+  { n:10, comp:{ gazer:9, lensman:9, chime:8, warden8:5, starseer:1 },       hpMul:9.3,spdMul:1.38, dmgMul:2.86, spawnGap:0.68,maxAlive:21 },
 ];
 
 const RITE_ROUNDS = [
-  { n:1,  comp:{ chanter:11 },                                              hpMul:5.0, spdMul:1.04, dmgMul:2.16, spawnGap:1.38,maxAlive:16 },
-  { n:2,  comp:{ chanter:9, flayed:6 },                                     hpMul:5.6, spdMul:1.08, dmgMul:2.28, spawnGap:1.28,maxAlive:17 },
-  { n:3,  comp:{ chanter:8, flayed:8, emberling:3 },                        hpMul:6.2, spdMul:1.12, dmgMul:2.42, spawnGap:1.18,maxAlive:17 },
-  { n:4,  comp:{ flayed:9, emberling:7, effigy:2 },                         hpMul:6.9, spdMul:1.16, dmgMul:2.56, spawnGap:1.08,maxAlive:18 },
-  { n:5,  comp:{ chanter:9, emberling:8, effigy:4 },                        hpMul:7.7, spdMul:1.20, dmgMul:2.72, spawnGap:1.00,maxAlive:18 },
-  { n:6,  comp:{ flayed:10, emberling:9, effigy:5, warden9:1 },             hpMul:8.6, spdMul:1.24, dmgMul:2.88, spawnGap:0.92,maxAlive:19 },
-  { n:7,  comp:{ chanter:10, flayed:10, effigy:6, warden9:2 },              hpMul:9.7, spdMul:1.28, dmgMul:3.06, spawnGap:0.84,maxAlive:19 },
-  { n:8,  comp:{ emberling:12, effigy:7, warden9:3 },                       hpMul:11.0,spdMul:1.32, dmgMul:3.24, spawnGap:0.78,maxAlive:20 },
-  { n:9,  comp:{ flayed:12, emberling:10, effigy:9, warden9:4 },            hpMul:12.4,spdMul:1.36, dmgMul:3.44, spawnGap:0.71,maxAlive:21 },
-  { n:10, comp:{ chanter:9, emberling:9, effigy:8, warden9:5, thefirst:1 }, hpMul:14.0,spdMul:1.40, dmgMul:3.66, spawnGap:0.66,maxAlive:22 },
+  { n:1,  comp:{ chanter:11 },                                              hpMul:3.75, spdMul:1.04, dmgMul:1.84, spawnGap:1.38,maxAlive:16 },
+  { n:2,  comp:{ chanter:9, flayed:6 },                                     hpMul:4.2, spdMul:1.08, dmgMul:1.94, spawnGap:1.28,maxAlive:17 },
+  { n:3,  comp:{ chanter:8, flayed:8, emberling:3, warden9:1 },                        hpMul:4.65, spdMul:1.12, dmgMul:2.06, spawnGap:1.18,maxAlive:17 },
+  { n:4,  comp:{ flayed:9, emberling:7, effigy:2 },                         hpMul:5.18, spdMul:1.16, dmgMul:2.18, spawnGap:1.08,maxAlive:18 },
+  { n:5,  comp:{ chanter:9, emberling:8, effigy:4, warden9:1 },                        hpMul:5.78, spdMul:1.20, dmgMul:2.31, spawnGap:1.00,maxAlive:18 },
+  { n:6,  comp:{ flayed:10, emberling:9, effigy:5, warden9:1 },             hpMul:6.45, spdMul:1.24, dmgMul:2.45, spawnGap:0.92,maxAlive:19 },
+  { n:7,  comp:{ chanter:10, flayed:10, effigy:6, warden9:2 },              hpMul:7.27, spdMul:1.28, dmgMul:2.6, spawnGap:0.84,maxAlive:19 },
+  { n:8,  comp:{ emberling:12, effigy:7, warden9:3 },                       hpMul:8.25,spdMul:1.32, dmgMul:2.75, spawnGap:0.78,maxAlive:20 },
+  { n:9,  comp:{ flayed:12, emberling:10, effigy:9, warden9:4 },            hpMul:9.3,spdMul:1.36, dmgMul:2.92, spawnGap:0.71,maxAlive:21 },
+  { n:10, comp:{ chanter:9, emberling:9, effigy:8, warden9:5, thefirst:1 }, hpMul:10.5,spdMul:1.40, dmgMul:3.11, spawnGap:0.66,maxAlive:22 },
 ];
 
 const WALL_ROUNDS = [
-  { n:1,  comp:{ houndman:11 },                                                          hpMul:5.6, spdMul:1.06, dmgMul:2.30, spawnGap:1.34,maxAlive:17 },
-  { n:2,  comp:{ houndman:9, netter:6, unbound:1 },                                      hpMul:6.2, spdMul:1.10, dmgMul:2.42, spawnGap:1.24,maxAlive:17 },
-  { n:3,  comp:{ houndman:8, netter:8, torchman:3 },                                     hpMul:6.9, spdMul:1.14, dmgMul:2.56, spawnGap:1.14,maxAlive:18 },
-  { n:4,  comp:{ netter:9, torchman:7, ironmask:2, unbound:1 },                          hpMul:7.7, spdMul:1.18, dmgMul:2.72, spawnGap:1.04,maxAlive:18 },
-  { n:5,  comp:{ houndman:9, torchman:8, ironmask:4 },                                   hpMul:8.6, spdMul:1.22, dmgMul:2.88, spawnGap:0.96,maxAlive:19 },
-  { n:6,  comp:{ netter:10, torchman:9, ironmask:5, warden10:1, unbound:2 },              hpMul:9.6, spdMul:1.26, dmgMul:3.06, spawnGap:0.88,maxAlive:19 },
-  { n:7,  comp:{ houndman:10, netter:10, ironmask:6, warden10:2 },                        hpMul:10.8,spdMul:1.30, dmgMul:3.24, spawnGap:0.80,maxAlive:20 },
-  { n:8,  comp:{ torchman:12, ironmask:7, warden10:3, unbound:2 },                        hpMul:12.2,spdMul:1.34, dmgMul:3.44, spawnGap:0.74,maxAlive:20 },
-  { n:9,  comp:{ netter:12, torchman:10, ironmask:9, warden10:4 },                        hpMul:13.8,spdMul:1.38, dmgMul:3.66, spawnGap:0.68,maxAlive:21 },
-  { n:10, comp:{ houndman:9, torchman:9, ironmask:8, warden10:5, hunter:1, unbound:3 },   hpMul:15.6,spdMul:1.42, dmgMul:3.90, spawnGap:0.62,maxAlive:23 },
+  { n:1,  comp:{ houndman:11 },                                                          hpMul:4.2, spdMul:1.06, dmgMul:1.95, spawnGap:1.34,maxAlive:17 },
+  { n:2,  comp:{ houndman:9, netter:6, unbound:1 },                                      hpMul:4.65, spdMul:1.10, dmgMul:2.06, spawnGap:1.24,maxAlive:17 },
+  { n:3,  comp:{ houndman:8, netter:8, torchman:3, warden10:1 },                                     hpMul:5.18, spdMul:1.14, dmgMul:2.18, spawnGap:1.14,maxAlive:18 },
+  { n:4,  comp:{ netter:9, torchman:7, ironmask:2, unbound:1 },                          hpMul:5.78, spdMul:1.18, dmgMul:2.31, spawnGap:1.04,maxAlive:18 },
+  { n:5,  comp:{ houndman:9, torchman:8, ironmask:4, warden10:1 },                                   hpMul:6.45, spdMul:1.22, dmgMul:2.45, spawnGap:0.96,maxAlive:19 },
+  { n:6,  comp:{ netter:10, torchman:9, ironmask:5, warden10:1, unbound:2 },              hpMul:7.2, spdMul:1.26, dmgMul:2.6, spawnGap:0.88,maxAlive:19 },
+  { n:7,  comp:{ houndman:10, netter:10, ironmask:6, warden10:2 },                        hpMul:8.1,spdMul:1.30, dmgMul:2.75, spawnGap:0.80,maxAlive:20 },
+  { n:8,  comp:{ torchman:12, ironmask:7, warden10:3, unbound:2 },                        hpMul:9.15,spdMul:1.34, dmgMul:2.92, spawnGap:0.74,maxAlive:20 },
+  { n:9,  comp:{ netter:12, torchman:10, ironmask:9, warden10:4 },                        hpMul:10.35,spdMul:1.38, dmgMul:3.11, spawnGap:0.68,maxAlive:21 },
+  { n:10, comp:{ houndman:9, torchman:9, ironmask:8, warden10:5, hunter:1, unbound:3 },   hpMul:11.7,spdMul:1.42, dmgMul:3.31, spawnGap:0.62,maxAlive:23 },
 ];
 
 /* ============================================================
@@ -2828,7 +2828,7 @@ const STAGES = [
     gate: { x: 23, y: 0 },
     gateName: 'المخرج الشمالي',
     keys: 6, keyName: 'بطاقة', keyDroppers: ['surgeon', 'matron'],
-    moneyMul: 2.4, fogDist: 14, startMoney: 0,
+    moneyMul: 2.4, fogDist: 14, startMoney: 3500,   // كاترينا تبدأ فصلها من الصفر — لازم تقدر تشتري
     secret: LAB_SECRET,
   },
   {
@@ -2929,15 +2929,26 @@ const RARITY = {
 const MYTHIC_CHANCE = 0.012;          // ١.٢٪ من كل صندوق
 
 
+/* كل سلاح له دور مختلف — مو رقم ضرر أكبر.
+   القاعدة: لو سلاحين يسوّون نفس الشغلة بأرقام مختلفة، واحد منهم زايد.
+   قاذف الجحيم كان الوحيد اللي له بصمة (الحرق) — الحين كلهم لهم بصمة. */
 const WEAPONS = {
-  pistol:   { key:'pistol',   name: 'مسدس M9',        rarity:'common',    dmg: 30,  rpm: 320, mag: 12, reserve: 96,  spread: 0.012, pellets: 1, auto: false, reload: 1.1, range: 26, sound:'pistol',  shape:'pistol' },
-  revolver: { key:'revolver', name: 'ريفولفر ٣٥٧',    rarity:'uncommon',  dmg: 88,  rpm: 140, mag: 6,  reserve: 48,  spread: 0.010, pellets: 1, auto: false, reload: 1.7, range: 30, sound:'heavy',   shape:'revolver' },
-  sawed:    { key:'sawed',    name: 'بندقية مقصوصة',  rarity:'uncommon',  dmg: 18,  rpm: 130, mag: 2,  reserve: 40,  spread: 0.115, pellets: 8, auto: false, reload: 1.6, range: 9,  sound:'shotgun', shape:'shotgun' },
-  smg:      { key:'smg',      name: 'رشاش صغير',      rarity:'uncommon',  dmg: 20,  rpm: 720, mag: 32, reserve: 240, spread: 0.038, pellets: 1, auto: true,  reload: 1.5, range: 22, sound:'smg',     shape:'smg' },
-  shotgun:  { key:'shotgun',  name: 'شوتقن قتالي',    rarity:'rare',      dmg: 22,  rpm: 90,  mag: 6,  reserve: 48,  spread: 0.085, pellets: 9, auto: false, reload: 2.1, range: 13, sound:'shotgun', shape:'shotgun' },
-  rifle:    { key:'rifle',    name: 'رشاش هجومي',     rarity:'rare',      dmg: 38,  rpm: 620, mag: 30, reserve: 210, spread: 0.024, pellets: 1, auto: true,  reload: 1.9, range: 34, sound:'rifle',   shape:'rifle' },
-  sniper:   { key:'sniper',   name: 'قنّاص الصيّاد',  rarity:'epic',      dmg: 240, rpm: 55,  mag: 5,  reserve: 40,  spread: 0.002, pellets: 1, auto: false, reload: 2.4, range: 60, sound:'heavy',   shape:'sniper' },
-  lmg:      { key:'lmg',      name: 'مدفع رشاش ثقيل', rarity:'epic',      dmg: 44,  rpm: 780, mag: 100,reserve: 400, spread: 0.045, pellets: 1, auto: true,  reload: 3.4, range: 32, sound:'rifle',   shape:'lmg' },
+  // دقيق ويخترق واحد — يكافئ التصويب مو الرش
+  pistol:   { key:'pistol',   name: 'مسدس M9',        rarity:'common',    dmg: 30,  rpm: 320, mag: 12, reserve: 96,  spread: 0.005, pellets: 1, auto: false, reload: 1.1, range: 28, sound:'pistol',  shape:'pistol', pierce: 1, tracer:'#ffe9b8' },
+  // كل طلقة تزعزع الوحش — سلاح «أوقفه قبل لا يوصلك»
+  revolver: { key:'revolver', name: 'ريفولفر ٣٥٧',    rarity:'uncommon',  dmg: 88,  rpm: 140, mag: 6,  reserve: 48,  spread: 0.010, pellets: 1, auto: false, reload: 1.7, range: 30, sound:'heavy',   shape:'revolver', stunT: 0.5, tracer:'#ffcf7a' },
+  // يرمي كل اللي قدامك بعيد — سلاح فكّ الحصار
+  sawed:    { key:'sawed',    name: 'بندقية مقصوصة',  rarity:'uncommon',  dmg: 18,  rpm: 130, mag: 2,  reserve: 40,  spread: 0.115, pellets: 8, auto: false, reload: 1.6, range: 9,  sound:'shotgun', shape:'shotgun', push: 6.0 },
+  // كل إصابة ترجّع لك شوي دم — سلاح البقاء وأنت تتحرّك
+  smg:      { key:'smg',      name: 'رشاش صغير',      rarity:'uncommon',  dmg: 20,  rpm: 720, mag: 32, reserve: 240, spread: 0.038, pellets: 1, auto: true,  reload: 1.5, range: 22, sound:'smg',     shape:'smg', lifesteal: 0.06 },
+  // مدى أطول من المقصوصة ودفع أخف — ضرر مركّز مو طرد
+  shotgun:  { key:'shotgun',  name: 'شوتقن قتالي',    rarity:'rare',      dmg: 22,  rpm: 90,  mag: 6,  reserve: 48,  spread: 0.070, pellets: 9, auto: false, reload: 2.1, range: 16, sound:'shotgun', shape:'shotgun', push: 2.0, stunT: 0.25 },
+  // يخترق صفّين — سلاح الممرّات الضيّقة
+  rifle:    { key:'rifle',    name: 'رشاش هجومي',     rarity:'rare',      dmg: 38,  rpm: 620, mag: 30, reserve: 210, spread: 0.024, pellets: 1, auto: true,  reload: 1.9, range: 34, sound:'rifle',   shape:'rifle', pierce: 2, tracer:'#ffd9a0' },
+  // الطلقة تمشي في صف كامل — سلاح الرواق الطويل
+  sniper:   { key:'sniper',   name: 'قنّاص الصيّاد',  rarity:'epic',      dmg: 240, rpm: 55,  mag: 5,  reserve: 40,  spread: 0.002, pellets: 1, auto: false, reload: 2.4, range: 60, sound:'heavy',   shape:'sniper', pierce: 4, stunT: 0.4, tracer:'#cfe8ff' },
+  // الرصاص الكثيف يبطّئ اللي يمشي عليك — سلاح تثبيت الموجة
+  lmg:      { key:'lmg',      name: 'مدفع رشاش ثقيل', rarity:'epic',      dmg: 44,  rpm: 780, mag: 100,reserve: 400, spread: 0.045, pellets: 1, auto: true,  reload: 3.4, range: 32, sound:'rifle',   shape:'lmg', slowT: 1.4, slow: 0.5 },
   plasma:   { key:'plasma',   name: 'مدفع البلازما',  rarity:'legendary', dmg: 150, rpm: 240, mag: 24, reserve: 120, spread: 0.006, pellets: 1, auto: true,  reload: 2.2, range: 40, sound:'plasma',  shape:'plasma', splash: 1.6, splashDmg: 70, tracer:'#69f0ff' },
   inferno:  { key:'inferno',  name: 'قاذف الجحيم',    rarity:'legendary', dmg: 26,  rpm: 900, mag: 90, reserve: 300, spread: 0.10,  pellets: 2, auto: true,  reload: 2.6, range: 11, sound:'fire',    shape:'flamer', burn: 34, tracer:'#ff9430' },
 };
@@ -2985,10 +2996,28 @@ const SECRET_WEAPONS = {
   censerbomb:{key:'censerbomb',name:'مبخرة الطقوس',   rarity:'epic',      dmg: 180, rpm: 96,  mag: 4,  reserve: 48,  spread: 0.09,  pellets: 3, auto: false, reload: 2.2, range: 12,  sound:'fire',   shape:'censer',  burn: 46, tracer:'#c9a227' },
   // --- سلاحا كاترينا ---
   kknife:   { key:'kknife',   name: 'سكينة كاترينا',  rarity:'rare',      dmg: 165, rpm: 200, mag: 1,  reserve: 0,   spread: 0,     pellets: 1, auto: true,  reload: 0,   range: 2.1, sound:'slash',  shape:'knife',   melee: true, cleave: 1.5 },
-  kmagnum:  { key:'kmagnum',  name: 'ماغنوم كاترينا', rarity:'legendary', dmg: 520, rpm: 72,  mag: 2,  reserve: 10,  spread: 0.006, pellets: 1, auto: false, reload: 3.4, range: 42,  sound:'heavy',  shape:'magnum',  pierce: 2, tracer:'#ffd08a' },
+  kmagnum:  { key:'kmagnum',  name: 'ماغنوم كاترينا', rarity:'legendary', dmg: 520, rpm: 72,  mag: 2,  reserve: 26,  spread: 0.006, pellets: 1, auto: false, reload: 3.4, range: 42,  sound:'heavy',  shape:'magnum',  pierce: 2, tracer:'#ffd08a' },
   webgun:   { key:'webgun',   name: 'شوتقن الخيوط',   rarity:'legendary', dmg: 95,  rpm: 78,  mag: 5,  reserve: 60,  spread: 0.075, pellets: 5, auto: false, reload: 1.9, range: 14,  sound:'webshot', shape:'webgun',   web: 5.0, tracer:'#e8f4ff' },
 };
 Object.assign(WEAPONS, SECRET_WEAPONS);
+
+/* بصمة كل سلاح بكلمة وحدة — عشان اللاعب يشوف الفرق مو يخمّنه.
+   بدون هذا السطر كل الأسلحة تبان «رقم ضرر ومخزن» وتضيع الهوية. */
+function weaponTraits(W) {
+  const t = [];
+  if (W.pierce)    t.push(L2(`يخترق ${ar(W.pierce)}`, `Pierces ${W.pierce}`));
+  if (W.pellets>1) t.push(L2(`${ar(W.pellets)} شظايا`, `${W.pellets} pellets`));
+  if (W.splash)    t.push(L2('انفجار', 'Splash'));
+  if (W.burn)      t.push(L2('حرق', 'Burn'));
+  if (W.poisonT)   t.push(L2('سُمّ', 'Poison'));
+  if (W.stunT)     t.push(L2('يزعزع', 'Stagger'));
+  if (W.push)      t.push(L2('يدفع', 'Knockback'));
+  if (W.slowT)     t.push(L2('يبطّئ', 'Slow'));
+  if (W.web)       t.push(L2('يثبّت', 'Web'));
+  if (W.lifesteal) t.push(L2('امتصاص دم', 'Lifesteal'));
+  if (W.cleave>3)  t.push(L2('كسح واسع', 'Wide cleave'));
+  return t.join(' · ');
+}
 
 /* ============================================================
    طاولات الحبوب — لكل حبّة طاولة بتصميمها الخاص،
@@ -3324,7 +3353,7 @@ const HEROES = {
     key:'katrina', name:'كاترينا', stages:[4, 5, 6, 7, 8, 9],
     // تبدأ بسكينتها وماغنوم قوي بس طلقاته شحيحة
     start:{ weapons:[{ k:'kknife' }, { k:'kmagnum' }] },
-    hp:100, maxHp:100, speed:3.55, bagLvl:2,
+    hp:150, maxHp:150, speed:3.55, bagLvl:2,
   },
 };
 function heroForStage(i) { return HEROES.katrina.stages.includes(i) ? HEROES.katrina : HEROES.george; }
@@ -12061,6 +12090,17 @@ const Game = {
   get isLastStage() { return this.stageIdx >= STAGES.length - 1; },
   get heroDef() { return HEROES[this.hero || 'george']; },
 
+  /* المفتاح السرّي: يُبنى مع المرحلة، لكن المشاهد السينمائية كانت
+     تفضّي كل الالتقاطات لتنظيف الكادر فتمسحه معها — فكل مرحلة بعد
+     الأولى تفتح بلا مفتاح سرّي أبداً. هذي ترجّعه، وما تكرّره أبداً. */
+  ensureSecretKey() {
+    const st = this.stageDef;
+    if (!st || !st.secret) return;
+    if (this.secretKey || this.secretOpen || this.secretTaken) return;  // اللاعب أخذه فعلاً
+    if (this.pickups.some(u => u.kind === 'skey' && !u.taken)) return;  // موجود
+    this.pickups.push(new Pickup('skey', st.secret.key.x + 0.5, st.secret.key.y + 0.5));
+  },
+
   reset(stageIdx, carry) {
     this.stageIdx = stageIdx || 0;
     const st = STAGES[this.stageIdx];
@@ -12115,8 +12155,8 @@ const Game = {
     // الصندوق السري + مفتاحه المخبّأ في الخريطة
     if (st.secret) {
       this.chests.push({ ...st.secret.chest, opened: false, uses: 0, animT: 0, secret: true });
-      this.pickups.push(new Pickup('skey', st.secret.key.x + 0.5, st.secret.key.y + 0.5));
     }
+    this.ensureSecretKey();
 
     this.placePillTables(st);
 
@@ -12618,6 +12658,7 @@ const Game = {
 
   endStageCine() {
     this.cine = null; this.cam = null; this.hero = null; this.props = [];
+    this.ensureSecretKey();       // المشهد فضّى الالتقاطات — نرجّع المفتاح السرّي
     this.state = 'playing';
     $('hud').classList.remove('hide');
     if (!Touch.on) $('game').requestPointerLock();
@@ -14046,6 +14087,34 @@ const Game = {
     return any ? { kill } : null;
   },
 
+  /* تأثيرات الإصابة للأسلحة النارية.
+     قبل كذا كانت الزعزعة والدفع والسم والامتصاص حصرية لأسلحة الاشتباك،
+     فصارت كل البنادق تحس نفس الإحساس: طلقة ورقم أحمر. الحين كل سلاح
+     له بصمته: الريفولفر يزعزع، المقصوصة تدفع، إلخ. */
+  rangedFx(e, w, real, dx, dy) {
+    const d = w.def, p = this.player;
+    if (d.stunT) {
+      e.stun = Math.max(e.stun, d.stunT * (e.boss ? 0.35 : 1));
+      this.fx.text(e.x, e.y, 1.15 + e.zOff, '⚡', '#ffe08a', 15);
+    }
+    if (d.push) e.knock(dx, dy, d.push);
+    if (d.poisonT) {
+      e.poison = Math.max(e.poison, d.poisonT);
+      e.poisonDmg = d.poisonDps * p.dmgMul;
+      e.poisonStacks = Math.min(3, e.poisonStacks + 1);
+      this.fx.puff(e.x, e.y, 0.6 + e.zOff, '#7cff3d', 5);
+    }
+    if (d.slowT) { e.slowT = Math.max(e.slowT || 0, d.slowT); e.slowMul = d.slow || 0.55; }
+    if (d.lifesteal) {
+      const heal = Math.min(real * d.lifesteal, p.maxHp - p.hp);
+      if (heal > 0) {
+        p.hp += heal;
+        this.fx.text(p.x, p.y, 1.2, '+' + ar(Math.round(heal)), '#ff5b3a', 15);
+        this.updateHUD();
+      }
+    }
+  },
+
   // نجوم النينجا تخترق أكثر من وحش في نفس المسار
   castPierce(ang, w) {
     const p = this.player, d = w.def;
@@ -14072,6 +14141,7 @@ const Game = {
       let dmg = this.wDmg(w) * p.dmgMul * (el ? el.dmgMul : 1) * (n === 0 ? 1 : 0.8);
       if (this.instaT > 0) dmg = 1e7;
       const real = e.hurt(dmg, this);
+      this.rangedFx(e, w, real, dx, dy);
       if (e.dead) kill = true;
       const z = 0.45 + e.zOff + e.height * 0.4;
       this.fx.blood(e.x, e.y, z, 7, el ? el.col : '#8e1616');
@@ -14121,6 +14191,7 @@ const Game = {
     let dmg = this.wDmg(w) * this.player.dmgMul * (el ? el.dmgMul : 1);
     if (this.instaT > 0) dmg = 1e7;
     const real = best.hurt(dmg, this);
+    this.rangedFx(best, w, real, dx, dy);
     if (w.def.burn) { best.burn = 2.4; best.burnDmg = w.def.burn * this.player.dmgMul; }
     if (w.def.web) {
       best.web = Math.max(best.web, w.def.web);
@@ -14247,22 +14318,15 @@ const Game = {
     {
       const have = this.keys + this.pickups.filter(u => !u.taken && u.kind === 'key').length;
       if (have < st.keys) {
-        /* المني بوس والبوس: مفتاح مضمون دائماً.
-           هذول أصعب وحوش المرحلة، ومن العدل إن قتلهم يعطي مفتاحاً أكيداً. */
-        const isElite = !!(e.def && e.def.boss);
-        const isDropper = isElite || st.keyDroppers.includes(e.type);
-        /* ضمان إيقاع المفاتيح.
-           الوحوش المخصّصة للمفاتيح ما تظهر إلا من الجولة ٦ تقريباً، فكان
-           اللاعب يقضي خمس جولات بلا ولا مفتاح ويظن إن المرحلة بلا مفاتيح.
-           الحين: لو تأخّر عن الجدول، أي وحش يقدر يسقّط مفتاحاً.
-           الجدول يكتمل قبل نهاية المرحلة بجولتين عشان يبقى هامش. */
-        const totalR = Math.max(1, (st.rounds || []).length);
-        const pace = Math.min(1, this.round / Math.max(1, totalR - 2));
-        const due = Math.ceil(st.keys * pace);
-        if (isDropper || have < due) {
+        /* المفاتيح من الوحوش الكبيرة فقط — لا من أي وحش.
+           «الكبير» = المني بوس المخصّص للمرحلة، أو البوس نفسه.
+           الوحوش الصغيرة ما تسقّط مفاتيح أبداً مهما صار،
+           عشان يبقى للمفتاح قيمة: تشوف الوحش الكبير، تعرف إن معه مفتاح. */
+        const isBoss   = !!(e.def && e.def.boss);
+        const isDropper = isBoss || st.keyDroppers.includes(e.type);
+        if (isDropper) {
           this.pickups.push(new Pickup('key', e.x, e.y));
-          this.toast(isElite ? `☠ ${e.def.name} أسقط ${st.keyName}!` : `سقط ${st.keyName}!`,
-                     isElite ? 3 : 2.2);
+          this.toast(`☠ ${e.def.name} أسقط ${st.keyName}!`, isBoss ? 3 : 2.4);
           SFX.play('key');
         }
       }
@@ -15367,8 +15431,8 @@ const Touch = {
    70_shell.js : الموقع، القائمة، الإعدادات، الحفظ والتحميل
    ============================================================ */
 
-const VERSION = '2.10.2';
-const BUILD_DATE = '٢٦ أغسطس ٢٠٢٦';
+const VERSION = '2.11.0';
+const BUILD_DATE = '٢٨ أغسطس ٢٠٢٦';
 const BUILD_DATE_EN = '26 August 2026';
 
 /* ---------------- تخزين آمن (يشتغل ولو الحفظ ممنوع) ---------------- */
@@ -17843,7 +17907,9 @@ const Shop = {
     return { name: nm(W), desc: W.melee
                ? L2(`سلاح اشتباك — ${ar(W.dmg)} ضرر للضربة، يصيب كل من قدّامك، وبلا ذخيرة`,
                     `Melee — ${W.dmg} Damage per swing, hits everything in front of you, no Ammo`)
-               : L2(`${ar(W.dmg)} ضرر للطلقة · مخزن ${ar(W.mag)} · مدى ${ar(W.range)}`, `${W.dmg} Damage/shot · Mag ${W.mag} · Range ${W.range}`),
+                 + (weaponTraits(W) ? '<br><span style="color:#ffd06a">⚡ ' + weaponTraits(W) + '</span>' : '')
+               : L2(`${ar(W.dmg)} ضرر للطلقة · مخزن ${ar(W.mag)} · مدى ${ar(W.range)}`, `${W.dmg} Damage/shot · Mag ${W.mag} · Range ${W.range}`)
+                 + (weaponTraits(W) ? '<br><span style="color:#ffd06a">⚡ ' + weaponTraits(W) + '</span>' : ''),
              icon: W.melee ? '🗡' : '🔫', col: R.col, rarName: R.name,
              tag: L2(`~${ar(dps)} ضرر/ثانية`, `~${dps} DPS`) };
   },
