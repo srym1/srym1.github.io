@@ -11,10 +11,10 @@ import {createCameraRig} from './camera-rig.js';
 import {createCombatClock,weaponDamage,incomingDamage} from './combat-core.js';
 const input=createInput(),controller=createPlayerController(),cameraRig=createCameraRig(),combat=createCombatClock();
 import * as T from './three.module.js';
-import {ITEMS,RECIPES,newBag,count,add,consume,move,mergeAll,craft,PLACES,LIMIT,MAP_LIMIT,terrain,reveal,validSave,seeded,rarity,RARITIES,chestLoot,rollPet,splitDeathResources} from './systems.js?v=0.6.0';
+import {ITEMS,RECIPES,newBag,count,add,consume,move,mergeAll,craft,PLACES,LIMIT,MAP_LIMIT,terrain,reveal,validSave,seeded,rarity,RARITIES,chestLoot,rollPet,splitDeathResources} from './systems.js?v=0.6.1';
 import {buildWorld} from './world.js';
-import {artDirection,itemArt,lootFeed,regionName} from './art.js?v=0.6.0';
-import {forestPresentation,forestAudio,illustratedMap} from './forest.js?v=0.6.0';
+import {artDirection,itemArt,lootFeed,regionName} from './art.js?v=0.6.1';
+import {forestPresentation,forestAudio,illustratedMap} from './forest.js?v=0.6.1';
 const $=id=>document.getElementById(id),canvas=$('world');
 let renderer;
 try{renderer=new T.WebGLRenderer({canvas,antialias:true,powerPreference:'high-performance'});}catch(e){$('error').textContent='الرسم ثلاثي الأبعاد غير متاح في هذا المتصفح. جرّب متصفحًا يدعم WebGL 2.';throw e;}

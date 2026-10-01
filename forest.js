@@ -1,5 +1,5 @@
 import {RANGED,reloadPose,recoilPose} from './weapon-motion.js';
-import {buildViewmodel,rebuildCreature,releaseViewmodel} from './models.js?v=0.6.0';
+import {buildViewmodel,rebuildCreature,releaseViewmodel} from './models.js?v=0.6.1';
 import * as T from './three.module.js';
 import {terrain,seeded,PLACES,LIMIT,MAP_LIMIT} from './systems.js';
 const box=new T.BoxGeometry(1,1,1),ball=new T.SphereGeometry(1,16,10),cylinder=new T.CylinderGeometry(1,1,1,8);
@@ -12,6 +12,8 @@ export function forestPresentation(scene,camera,world){
  const gear=new T.Group();root.add(gear);const useMesh=new T.Group();root.add(useMesh);useMesh.visible=false;part(useMesh,'#b88e68',.45,-.4,-.7,.085,.12,.085,ball);const flask=part(useMesh,'#75967a',.45,-.25,-.73,.12,.2,.12,ball);part(useMesh,'#5e4931',.45,-.07,-.73,.055,.065,.055);let useLeft=0,useKind='';useMesh.children[0].visible=false;const useHands=new T.Group();buildViewmodel(useHands,{key:'axe',lvl:1},null);useHands.remove(useHands.getObjectByName('held-axe'));useMesh.add(useHands);
  function rebuild(it,armor){const sig=(it?.key||'')+it?.lvl+(armor?.key||'')+armor?.lvl;if(sig===signature)return;signature=sig;equipProgress=0;drawTarget=0;drawAmount=0;reloadProgress=-1;if(bowString){bowString.material.dispose();}releaseViewmodel(gear);gear.clear();bowString=null;
   bowString=buildViewmodel(gear,it,armor);
+  if(!['bow','pistol'].includes(it?.key)){const held=gear.getObjectByName('held-'+(it?.key||'axe')),hand=gear.getObjectByName('right-arm');if(held&&hand){const pivot=new T.Group();pivot.name='attack-pivot';pivot.position.copy(held.position);pivot.userData.home=pivot.position.clone();gear.add(pivot);held.position.sub(pivot.position);hand.position.sub(pivot.position);hand.userData.home=hand.position.clone();pivot.add(held,hand);}}
+
  }
 
  function burst(x,y,z,color='#c1b18b',n=10){for(let i=0;i<n;i++){if(sparks.length>110)break;const m=new T.Mesh(ball,new T.MeshBasicMaterial({color,transparent:true}));m.scale.setScalar(.025+rnd()*.055);m.position.set(x,y,z);scene.add(m);sparks.push({m,v:new T.Vector3((rnd()-.5)*4,rnd()*3,(rnd()-.5)*4),life:.5+rnd()*.5});}}
@@ -31,15 +33,15 @@ export function forestPresentation(scene,camera,world){
  function pet(key,p,time){if(key!==petKey){if(petModel)scene.remove(petModel);petKey=key;petModel=new T.Group();scene.add(petModel);if(key==='wolfpet'){rebuildCreature({kind:'wolf',mesh:petModel,legs:[],x:0,z:0});petModel.scale.setScalar(.7);}if(key==='snakepet')for(let j=0;j<9;j++)part(petModel,j===0?'#abc175':'#62794f',0,.12,j*.12,.11,.1,.14,ball);if(key==='dollpet'){part(petModel,'#927258',0,.5,0,.15,.3,.1);part(petModel,'#b1a082',0,.77,0,.15,.15,.13,ball);for(const x of [-.22,.22])part(petModel,'#8d735b',x,.5,0,.2,.06,.07);}}
   if(!key)return;petModel.position.lerp(new T.Vector3(p.x+Math.cos(p.yaw)*1.3,terrain(p.x,p.z)+(key==='dollpet'?1+Math.sin(time*2)*.08:0),p.z-Math.sin(p.yaw)*1.3),.07);petModel.rotation.y=p.yaw+Math.PI;if(key==='snakepet')petModel.children.forEach((m,j)=>m.position.x=Math.sin(time*5-j*.6)*.12);
  }
- function update(dt,time,p){equipProgress=Math.min(1,equipProgress+dt*2.5);actionLeft=Math.max(0,actionLeft-dt);const arrival=1-Math.pow(1-equipProgress,3);gear.position.y=-(1-arrival)*.7;gear.rotation.x=(1-arrival)*.35;gear.rotation.z=Math.sin(time*1.4)*.008;gear.position.x=0;gear.position.z=0;gear.rotation.y=0;
+ function update(dt,time,p){equipProgress=Math.min(1,equipProgress+dt*2.5);actionLeft=Math.max(0,actionLeft-dt);const arrival=1-Math.pow(1-equipProgress,3);gear.position.y=-(1-arrival)*.7;gear.rotation.x=(1-arrival)*.35;gear.rotation.z=Math.sin(time*1.4)*.008;gear.position.x=0;gear.position.z=0;gear.rotation.y=0;const swing=gear.getObjectByName('attack-pivot')||gear;if(swing!==gear){swing.position.copy(swing.userData.home);swing.rotation.set(0,0,0);}
  if(actionLeft>0){const q=1-actionLeft/actionDuration,contact=actionImpact/actionDuration,phase=q<contact?q/contact*.5:.5+(q-contact)/(1-contact)*.5,stroke=Math.sin(phase*Math.PI);
   if(actionKind==='pistol'){const kick=recoilPose(actionDuration-actionLeft);gear.rotation.x+=kick*.24;gear.position.z=kick*.16;gear.rotation.z-=kick*.055;}
   else if(actionKind==='bow'){const release=Math.exp(-(actionDuration-actionLeft)*13);gear.rotation.z-=release*.035;gear.position.z=release*.04;}
-  else {const windup=q<contact?Math.sin(q/contact*Math.PI):0;gear.rotation.y+=windup*(actionCombo?-.18:.18);gear.rotation.z+=stroke*(actionCombo?1:-1)*(actionHeavy?.95:.65);gear.rotation.x-=stroke*(actionHeavy?.65:.38);gear.position.x+=stroke*(actionCombo?.13:-.13);gear.position.z-=stroke*.13;}
+  else {const windup=q<contact?Math.sin(q/contact*Math.PI):0;swing.rotation.y+=windup*(actionCombo?-.18:.18);swing.rotation.z+=stroke*(actionCombo?1:-1)*(actionHeavy?.78:.58);swing.rotation.x-=stroke*(actionHeavy?.48:.3);swing.position.x+=stroke*(actionCombo?.1:-.1);swing.position.z-=stroke*.13;}
  }
  drawAmount+=(drawTarget-drawAmount)*(1-Math.exp(-dt*(drawTarget>drawAmount?18:30)));
  const right=gear.getObjectByName('right-arm'),left=gear.getObjectByName('left-arm');
- if(right){right.position.set(0,0,0);right.rotation.set(0,0,0);}if(left){left.position.set(0,0,0);left.rotation.set(0,0,0);}
+ if(right){if(right.userData.home)right.position.copy(right.userData.home);else right.position.set(0,0,0);right.rotation.set(0,0,0);}if(left){left.position.set(0,0,0);left.rotation.set(0,0,0);}
  if(bowString){bowString.geometry.attributes.position.setZ(1,-.97+drawAmount*.58);bowString.geometry.attributes.position.setY(0,-.32-.64*(1-drawAmount*.045));bowString.geometry.attributes.position.setY(2,-.32+.69*(1-drawAmount*.045));const limb=gear.getObjectByName('bow-limb');if(limb)limb.scale.y=1-drawAmount*.045;bowString.geometry.attributes.position.needsUpdate=true;if(right)right.position.z=drawAmount*.58;
   const arrow=gear.getObjectByName('nocked-arrow');if(arrow){arrow.position.z=drawAmount*.58;arrow.visible=arrowAvailable&&!(actionKind==='bow'&&actionLeft>actionDuration*.35);}gear.rotation.y-=drawAmount*.045;
  }
