@@ -48,3 +48,5 @@ footer{bottom:42px;right:30px;left:30px;gap:25px}.vitals{width:185px}.vitals>div
 #weapon-status{position:absolute;top:calc(50% + 48px);left:50%;transform:translateX(-50%);font-size:11px;letter-spacing:.2px;color:#efe6cc;text-shadow:0 2px 5px #000;padding:5px 10px;background:linear-gradient(90deg,transparent,#10201ac4,transparent);white-space:nowrap;pointer-events:none}
 #aim-charge{position:absolute;top:calc(50% + 25px);left:50%;transform:translateX(-50%);appearance:none;width:66px;height:3px;border:0;background:#eee3c328;pointer-events:none}
 #aim-charge::-webkit-progress-bar{background:#eee3c328}#aim-charge::-webkit-progress-value{background:#e5d8a6;box-shadow:0 0 8px #d6e8a7}
+
+#enemy-intent{display:block;margin-top:6px;min-height:12px;color:#dfcba0;font-size:10px;text-shadow:0 2px 4px #000}

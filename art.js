@@ -1,5 +1,5 @@
 import {sculptCanopies} from './canopy.js';
-import {rebuildCreature,animateCreature} from './models.js?v=0.6.1';
+import {rebuildCreature,animateCreature} from './models.js?v=0.7.0';
 import * as T from './three.module.js';
 import {seeded,terrain,ITEMS,PLACES} from './systems.js';
 const atlas={wood:0,stone:1,fiber:2,hide:3,rawmeat:4,meat:5,ore:6,coal:7,copper:8,scrap:9,bandage:10,healpotion:11,speedpotion:11,invisibility:11,sword:12,bow:13,pistol:14,woodarmor:15};
@@ -15,6 +15,6 @@ export function artDirection(world){const scene=world.scene,rnd=seeded(835),bark
  const fern=leafCluster(false);fern.scale(.8,.28,.8);world.grass.geometry=fern;world.grass.material=new T.MeshStandardMaterial({color:'#acc882',vertexColors:true,side:T.DoubleSide,roughness:1});
  for(const a of world.animals)rebuildCreature(a);
  const motes=new T.BufferGeometry(),p=new Float32Array(160*3);for(let i=0;i<160;i++){p[i*3]=(rnd()-.5)*80;p[i*3+1]=rnd()*12;p[i*3+2]=(rnd()-.5)*80;}motes.setAttribute('position',new T.BufferAttribute(p,3));const dust=new T.Points(motes,new T.PointsMaterial({color:'#efdb9a',size:.045,transparent:true,opacity:.45,depthWrite:false}));scene.add(dust);
- return {update(dt,time,player){canopyWind(time);sway.forEach(u=>u.value=time);dust.position.set(player.x,0,player.z);dust.rotation.y=time*.005;for(const a of world.animals){animateCreature(a,dt,time);if(a.dead){if(a.artDeath===undefined)a.artDeath=0;a.artDeath=Math.min(1,a.artDeath+dt*2);a.mesh.rotation.z=Math.sin(a.artDeath*Math.PI/2)*Math.PI/2;}else if(a.artHead){a.artHead.rotation.z=-.12+Math.sin(time*1.6+(a.phase||0))*.045;a.artHead.rotation.x=Math.sin(time*1.3+(a.phase||0))*.035-(a.hitReaction||0);a.hitReaction=Math.max(0,(a.hitReaction||0)-dt*2);}}}};
+ return {update(dt,time,player){canopyWind(time);sway.forEach(u=>u.value=time);dust.position.set(player.x,0,player.z);dust.rotation.y=time*.005;for(const a of world.animals){animateCreature(a,dt,time);if(a.dead){if(a.artDeath===undefined)a.artDeath=0;a.artDeath=Math.min(1,a.artDeath+dt*2);a.mesh.rotation.z=Math.sin(a.artDeath*Math.PI/2)*Math.PI/2;}}}};
 }
 export function regionName(player){return PLACES.find(p=>Math.hypot(player.x-p.x,player.z-p.z)<p.r+8)?.name||'برّية السرو';}

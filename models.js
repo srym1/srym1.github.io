@@ -1,3 +1,4 @@
+import {enemyPose} from './enemy-motion.js';
 import * as T from './three.module.js';
 // Shared sculpted surfaces: continuous profiles, rounded joints and articulated silhouettes.
 const sphere=new T.SphereGeometry(1,20,14), cache=new Map();
@@ -46,9 +47,14 @@ export function rebuildCreature(a){const g=a.mesh;g.clear();a.legs=[];a.artHead=
   if(k==='wolf')for(const s of [-1,1])for(let j=0;j<5;j++){const tuft=leaf(g,j%2?fur:light,[s*.24,.94+j*.075,.36],[.13,.28,.7]);tuft.rotation.z=s*(1.7+j*.15);}
   if(a.guardian){antlers(g,1.87,.51,1.8);for(const s of [-1,1])for(let j=0;j<4;j++)leaf(g,'#80906b',[s*.4,1.23+j*.13,.35-j*.11],[.3,.5,1]).rotation.z=-s*.7;}
  }
- a.artRig.lastX=a.x;a.artRig.lastZ=a.z;
+ if(a.artHead)a.artRig.head=a.artHead;a.artRig.lastX=a.x;a.artRig.lastZ=a.z;
 }
-export function animateCreature(a,dt,t){if(a.dead)return;const r=a.artRig;if(!r)return;const distance=Math.hypot(a.x-r.lastX,a.z-r.lastZ),moving=distance>dt*.08;r.lastX=a.x;r.lastZ=a.z;r.stride=(r.stride||0)+distance*(a.kind==='rabbit'?10:5);const phase=r.stride+(a.phase||0);a.legs.forEach((l,j)=>{const target=moving?Math.sin(phase+(j===0||j===3?0:Math.PI))*(a.kind==='spider'?.16:.38):0;l.rotation.x=T.MathUtils.lerp(l.rotation.x,target,Math.min(1,dt*14));});if(r.head){r.head.rotation.x=Math.sin(t*1.6+(a.phase||0))*.035+(moving?0:Math.sin(t*.7)*.04);r.head.rotation.y=moving?0:Math.sin(t*.52+(a.phase||0))*.13;}if(r.tail)r.tail.rotation.y=Math.sin(t*2.8)*.16;for(const s of [-1,1])if(r['wing'+s])r['wing'+s].rotation.z=s*Math.sin(t*4)*.04;}
+export function animateCreature(a,dt,t){if(a.dead)return;const r=a.artRig;if(!r)return;const distance=Math.hypot(a.x-r.lastX,a.z-r.lastZ),moving=distance>dt*.08;r.lastX=a.x;r.lastZ=a.z;r.stride=(r.stride||0)+distance*(a.kind==='rabbit'?10:5);const phase=r.stride+(a.phase||0),pose=enemyPose(a);const mix=1-Math.exp(-dt*18);
+ a.mesh.rotation.x=T.MathUtils.lerp(a.mesh.rotation.x,pose.pitch,mix);a.mesh.rotation.z=T.MathUtils.lerp(a.mesh.rotation.z,pose.roll,mix);
+ a.legs.forEach((l,j)=>{let target=moving?Math.sin(phase+(j===0||j===3?0:Math.PI))*(a.kind==='spider'?.16:.38):0;if(a.kind==='mutant'&&j%2===1)target+=pose.arm;else if(a.kind==='bear'&&j%2===0)target+=pose.arm*.5;else if(a.kind==='wolf')target+=pose.strike*(j%2?-.3:.3);l.rotation.x=T.MathUtils.lerp(l.rotation.x,target,mix);});
+ a.hitReaction=Math.max(0,(a.hitReaction||0)-dt*2);if(r.head){r.head.rotation.x=Math.sin(t*1.6+(a.phase||0))*.035+pose.head-(a.hitReaction||0);r.head.rotation.y=moving||['windup','attack'].includes(a.brain?.state)?0:Math.sin(t*.52+(a.phase||0))*.13;r.head.rotation.z=(a.kind==='mutant'?-.12:0)+pose.hurt*.12;}
+ if(r.tail)r.tail.rotation.y=Math.sin(t*2.8)*.16;for(const side of [-1,1])if(r['wing'+side])r['wing'+side].rotation.z=side*Math.sin(t*4)*.04;
+}
 
 export function buildViewmodel(gear,it,armor){gear.clear();const key=it?.key||'axe',level=it?.lvl||1,wood=level>=3?'#61432d':'#926a42',metal=level>=4?'#b3bebc':'#718688',leather='#554337',rope='#c3aa79';let bowString=null;
  function arm(side,hand){const armGroup=group(gear,[0,0,0]);armGroup.name=side<0?'left-arm':'right-arm';const parentGear=gear;gear=armGroup;const wrist=new T.Vector3(...hand),elbow=new T.Vector3(side*.7,-1.1,-.03);bone(gear,'#354e48',elbow.toArray(),wrist.toArray(),.15,.105);const cuff=oval(gear,leather,wrist.toArray(),[.14,.17,.135]);cuff.rotation.x=-.3;oval(gear,'#a98b65',[hand[0],hand[1]+.07,hand[2]-.015],[.105,.13,.1]);for(let j=0;j<4;j++){const f=group(gear,[hand[0]-.08+j*.049,hand[1]+.07,hand[2]-.077]);bone(f,leather,[0,0,0],[0,.055,-.04],.027);oval(f,'#c39b72',[0,.063,-.05],[.025,.038,.023]);}oval(gear,leather,[hand[0]+side*.095,hand[1]+.055,hand[2]+.013],[.043,.08,.06]);for(let j=0;j<3;j++)bone(gear,rope,[hand[0]-.12,hand[1]-.06-j*.032,hand[2]+.095],[hand[0]+.12,hand[1]-.06-j*.032,hand[2]+.095],.009);if(armor){for(let j=0;j<(armor.lvl||1)+2;j++){const plate=oval(gear,armor.key==='stonearmor'?'#788b84':wood,[hand[0]+side*.075,hand[1]-.14-j*.055,hand[2]+.065],[.115,.055,.05]);plate.rotation.z=side*.2;}}gear=parentGear;}
