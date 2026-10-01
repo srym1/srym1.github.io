@@ -50,3 +50,7 @@ footer{bottom:42px;right:30px;left:30px;gap:25px}.vitals{width:185px}.vitals>div
 #aim-charge::-webkit-progress-bar{background:#eee3c328}#aim-charge::-webkit-progress-value{background:#e5d8a6;box-shadow:0 0 8px #d6e8a7}
 
 #enemy-intent{display:block;margin-top:6px;min-height:12px;color:#dfcba0;font-size:10px;text-shadow:0 2px 4px #000}
+
+.trial-entry{border-color:#a8b9a267!important;color:#d9e3d2!important;background:linear-gradient(110deg,#234438b0,#182e2780)!important}.trial-note{font-size:13px;color:#b6c4b4}.trial-species{display:flex;gap:7px}.trial-species button{flex:1;font-size:12px;padding:12px 4px}.trial-species+button{margin-top:10px}#trial-badge{position:absolute;right:32px;top:110px;display:grid;gap:9px;padding:18px 24px;border:1px solid #d9caa74d;border-radius:5px;background:linear-gradient(120deg,#172c25e6,#172c2590);box-shadow:0 8px 35px #0004;pointer-events:none}#trial-badge[hidden]{display:none}#trial-badge small{letter-spacing:2px;font-size:11px;color:#c6b893}#trial-badge b{font-size:23px;font-weight:500}#trial-badge span{font-size:12px;color:#bacabd}body:has(#trial-badge:not([hidden])) .quest{display:none}
+
+body:has(#trial-badge:not([hidden])) #target{top:auto;bottom:130px} @media(max-height:780px){#pause .panel:has(#trial-controls:not([hidden])){max-height:90vh;overflow:auto;padding:22px 32px}#pause .panel:has(#trial-controls:not([hidden])) h2{margin:14px 0}#trial-controls button{padding:11px 12px}}

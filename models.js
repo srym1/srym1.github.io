@@ -1,9 +1,10 @@
+import {buildHeroCreature,animateHeroCreature} from './creature-art.js?v=0.8.0';
 import {enemyPose} from './enemy-motion.js';
 import * as T from './three.module.js';
 // Shared sculpted surfaces: continuous profiles, rounded joints and articulated silhouettes.
 const sphere=new T.SphereGeometry(1,20,14), cache=new Map();
 // The sculpted sphere and palette materials are shared; generated bones/blades are owned by the rig.
-export function releaseViewmodel(root){const geometries=new Set();root.traverse(o=>{if(o.geometry&&o.geometry!==sphere)geometries.add(o.geometry);});for(const geometry of geometries)geometry.dispose();}
+export function releaseViewmodel(root){const geometries=new Set();root.traverse(o=>{if(o.geometry&&o.geometry!==sphere&&!o.geometry.userData.shared)geometries.add(o.geometry);});for(const geometry of geometries)geometry.dispose();}
 function mat(color,metal=false){const k=color+metal;if(!cache.has(k))cache.set(k,new T.MeshStandardMaterial({color,roughness:metal?.43:.86,metalness:metal?.55:0}));return cache.get(k);}
 function mesh(g,geo,color,p=[0,0,0],s=[1,1,1],metal=false){const m=new T.Mesh(geo,mat(color,metal));m.position.fromArray(p);m.scale.fromArray(s);m.castShadow=true;m.receiveShadow=true;g.add(m);return m;}
 function oval(g,c,p,s){return mesh(g,sphere,c,p,s);}
@@ -16,7 +17,7 @@ function body(g,c,rings){const v=[],ix=[],n=20;for(const [z,y,rx,ry] of rings)fo
 function eye(g,x,y,z,size=.04){oval(g,'#211b17',[x,y,z],[size,size*1.15,size*.65]);oval(g,'#fff2d1',[x-size*.25,y+size*.3,z+size*.57],[size*.25,size*.28,size*.18]);}
 function ears(g,c,light,x,y,z,long=false){for(const s of [-1,1]){const e=group(g,[s*x,y,z]);e.rotation.z=-s*.28;oval(e,c,[0,long?.23:.1,0],[long?.11:.14,long?.42:.22,.085]);oval(e,light,[0,long?.25:.12,.067],[long?.065:.08,long?.3:.14,.025]);}}
 function antlers(g,y,z,scale=1){for(const s of [-1,1]){const pts=[[s*.18,y,z],[s*.3,y+.28*scale,z-.1],[s*.49,y+.6*scale,z-.2],[s*.6,y+.9*scale,z-.25]];curve(g,'#baab82',pts,.035*scale);for(let j=1;j<3;j++)bone(g,'#baab82',pts[j],[pts[j][0]+s*.22,pts[j][1]+.3*scale,pts[j][2]+.17],.025,.007);}}
-export function rebuildCreature(a){const g=a.mesh;g.clear();a.legs=[];a.artHead=null;a.artRig={};const k=a.kind;
+export function rebuildCreature(a){if(buildHeroCreature(a))return;const g=a.mesh;g.clear();a.legs=[];a.artHead=null;a.artRig={};const k=a.kind;
  if(k==='mutant'){
   body(g,'#52665c',[[-.29,1.35,.02,.12],[-.2,1.3,.29,.55],[0,1.35,.38,.56],[.19,1.34,.27,.5],[.23,1.35,.01,.2]]);
   const head=group(g,[0,1.93,.13]);a.artHead=head;oval(head,'#b3b19a',[0,.12,0],[.23,.32,.2]);oval(head,'#263c33',[0,.03,.17],[.17,.17,.045]);for(const s of [-1,1]){oval(head,'#dbe9a7',[s*.092,.18,.185],[.055,.022,.016]);leaf(head,'#7a8971',[s*.17,-.11,.12],[.2,.42,.8]).rotation.z=-s*.3;curve(head,'#524f39',[[s*.18,.27,0],[s*.3,.55,-.12],[s*.4,.76,-.1]],.035);}
@@ -49,7 +50,7 @@ export function rebuildCreature(a){const g=a.mesh;g.clear();a.legs=[];a.artHead=
  }
  if(a.artHead)a.artRig.head=a.artHead;a.artRig.lastX=a.x;a.artRig.lastZ=a.z;
 }
-export function animateCreature(a,dt,t){if(a.dead)return;const r=a.artRig;if(!r)return;const distance=Math.hypot(a.x-r.lastX,a.z-r.lastZ),moving=distance>dt*.08;r.lastX=a.x;r.lastZ=a.z;r.stride=(r.stride||0)+distance*(a.kind==='rabbit'?10:5);const phase=r.stride+(a.phase||0),pose=enemyPose(a);const mix=1-Math.exp(-dt*18);
+export function animateCreature(a,dt,t){if(animateHeroCreature(a,dt))return;if(a.dead)return;const r=a.artRig;if(!r)return;const distance=Math.hypot(a.x-r.lastX,a.z-r.lastZ),moving=distance>dt*.08;r.lastX=a.x;r.lastZ=a.z;r.stride=(r.stride||0)+distance*(a.kind==='rabbit'?10:5);const phase=r.stride+(a.phase||0),pose=enemyPose(a);const mix=1-Math.exp(-dt*18);
  a.mesh.rotation.x=T.MathUtils.lerp(a.mesh.rotation.x,pose.pitch,mix);a.mesh.rotation.z=T.MathUtils.lerp(a.mesh.rotation.z,pose.roll,mix);
  a.legs.forEach((l,j)=>{let target=moving?Math.sin(phase+(j===0||j===3?0:Math.PI))*(a.kind==='spider'?.16:.38):0;if(a.kind==='mutant'&&j%2===1)target+=pose.arm;else if(a.kind==='bear'&&j%2===0)target+=pose.arm*.5;else if(a.kind==='wolf')target+=pose.strike*(j%2?-.3:.3);l.rotation.x=T.MathUtils.lerp(l.rotation.x,target,mix);});
  a.hitReaction=Math.max(0,(a.hitReaction||0)-dt*2);if(r.head){r.head.rotation.x=Math.sin(t*1.6+(a.phase||0))*.035+pose.head-(a.hitReaction||0);r.head.rotation.y=moving||['windup','attack'].includes(a.brain?.state)?0:Math.sin(t*.52+(a.phase||0))*.13;r.head.rotation.z=(a.kind==='mutant'?-.12:0)+pose.hurt*.12;}
