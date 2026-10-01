@@ -79,3 +79,24 @@
 @media(prefers-reduced-motion:reduce){.heart-cover-mist,.heart-cover-embers i{animation:none}.heart-cover-embers i{opacity:.5}.heart-landscape{transition:none}}
 
 #site .heart-feature .playbtn{margin-inline-start:auto}
+
+/* Living cover: the original image and card frame remain unchanged. */
+.heart-feature{--heart-motion:paused;--heart-fire-x:18%;--heart-fire-y:67%}
+.heart-feature:is(:hover,:focus-within){--heart-motion:running}
+.heart-tree-sway{position:absolute;inset:0;background:inherit;pointer-events:none;animation:heart-tree-breeze 5.8s ease-in-out infinite alternate;animation-play-state:var(--heart-motion);transform-origin:50% 85%}
+.heart-tree-sway.tree-near{clip-path:polygon(0 0,39% 0,31% 20%,20% 32%,13% 48%,0 70%);transform-origin:0 80%}
+.heart-tree-sway.tree-far{clip-path:polygon(100% 0,64% 0,72% 22%,85% 40%,100% 58%);animation-delay:-2.8s;animation-duration:7.3s;transform-origin:100% 80%}
+.heart-fire-glow{position:absolute;left:var(--heart-fire-x);top:var(--heart-fire-y);width:100px;height:94px;transform:translate(-50%,-72%);background:radial-gradient(ellipse,#ffb34165,#ed752827 43%,transparent 70%);mix-blend-mode:screen;opacity:.28;transition:opacity .6s;animation:heart-fire-light 2.1s ease-in-out infinite alternate;pointer-events:none}
+.heart-fire-live{position:absolute;left:var(--heart-fire-x);top:var(--heart-fire-y);width:28px;height:38px;transform:translate(-50%,-100%);mix-blend-mode:screen;opacity:.24;transition:opacity .6s;pointer-events:none}
+.heart-fire-live i{position:absolute;bottom:0;left:9px;width:10px;height:30px;border-radius:70% 18% 60% 35%;background:linear-gradient(0deg,#ffecc9,#ffd778 25%,#ff992b 70%,#f9671700);transform-origin:50% 100%;animation:heart-flame-dance .68s ease-in-out infinite alternate}
+.heart-fire-live i:nth-child(2){left:3px;height:20px;width:9px;animation-delay:-.3s;animation-duration:.51s}.heart-fire-live i:nth-child(3){left:17px;height:25px;width:8px;animation-delay:-.47s;animation-duration:.83s}
+.heart-feature:is(:hover,:focus-within) .heart-fire-glow{opacity:.8}.heart-feature:is(:hover,:focus-within) .heart-fire-live{opacity:.72}
+.heart-wind-leaves{position:absolute;inset:0;overflow:hidden;pointer-events:none;opacity:0;transition:opacity .5s}.heart-feature:is(:hover,:focus-within) .heart-wind-leaves{opacity:.85}
+.heart-wind-leaves i{position:absolute;left:-10%;top:calc(8% + var(--leaf)*7%);width:calc(9px + var(--leaf)*1.1px);color:#9c9e6d;animation:heart-leaf-cross 8s linear infinite;animation-delay:var(--delay);animation-play-state:var(--heart-motion)}.heart-wind-leaves i:nth-child(even){color:#b79d67;animation-duration:10s}.heart-wind-leaves svg{display:block;width:100%;height:auto}
+.heart-feature .heart-cover-embers i{left:var(--heart-fire-x);top:calc(var(--heart-fire-y) - 14px);animation-play-state:var(--heart-motion)}
+.heart-feature .heart-cover-embers i:nth-child(even){margin-left:5px}.heart-feature .heart-cover-embers i:nth-child(3){margin-left:-4px}
+@keyframes heart-tree-breeze{0%{transform:rotate(-.18deg) translateX(-.2%)}100%{transform:rotate(.32deg) translateX(.3%)}}
+@keyframes heart-fire-light{0%,100%{filter:brightness(.85);scale:.92}35%{filter:brightness(1.2);scale:1.04}70%{filter:brightness(1);scale:.97}}
+@keyframes heart-flame-dance{0%{transform:scaleX(.85) scaleY(.74) rotate(-8deg)}45%{transform:scaleX(1.1) scaleY(1.03) rotate(5deg)}100%{transform:scaleX(.7) scaleY(.87) rotate(11deg)}}
+@keyframes heart-leaf-cross{0%{opacity:0;transform:translate(0,0) rotate(0)}10%{opacity:.85}50%{transform:translate(210px,40px) rotate(175deg)}85%{opacity:.75}100%{opacity:0;transform:translate(520px,95px) rotate(340deg)}}
+@media(prefers-reduced-motion:reduce){.heart-tree-sway,.heart-fire-glow,.heart-fire-live i,.heart-wind-leaves i{animation:none!important}.heart-wind-leaves,.heart-tree-sway{display:none}.heart-fire-glow,.heart-fire-live{transition:none;opacity:.22}}
