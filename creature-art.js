@@ -10,7 +10,9 @@ function material(color,tile){
  const m=new T.MeshStandardMaterial({color,roughness:.92,emissive:tile===undefined?'#000000':'#53615b',emissiveIntensity:tile===undefined?0:.14});
  if(tile!==undefined&&typeof Image!=='undefined'&&document.createElementNS){
   if(!atlas)atlas=new T.TextureLoader().load('./creature-materials-v1.png',()=>maps.forEach(x=>x.needsUpdate=true));
-  const map=atlas.clone();map.colorSpace=T.SRGBColorSpace;map.repeat.set(.48,.48);map.offset.set(tile%2*.5+.01,tile<2?.51:.01);maps.push(map);m.map=map;m.bumpMap=map;m.bumpScale=tile===2?.025:.012;
+  // clone() marks the shared source dirty before the image has loaded. Keep each
+  // tile at version zero until the loader has real image data to upload.
+  const map=new T.Texture();map.source=atlas.source;map.colorSpace=T.SRGBColorSpace;map.repeat.set(.48,.48);map.offset.set(tile%2*.5+.01,tile<2?.51:.01);maps.push(map);if(atlas.image?.complete)map.needsUpdate=true;m.map=map;m.bumpMap=map;m.bumpScale=tile===2?.025:.012;
  }
  materials.set(key,m);return m;
 }

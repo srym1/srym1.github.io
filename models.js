@@ -1,4 +1,4 @@
-import {buildHeroCreature,animateHeroCreature} from './creature-art.js?v=0.8.0';
+import {buildHeroCreature,animateHeroCreature} from './creature-art.js?v=0.8.1';
 import {enemyPose} from './enemy-motion.js';
 import * as T from './three.module.js';
 // Shared sculpted surfaces: continuous profiles, rounded joints and articulated silhouettes.

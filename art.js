@@ -1,5 +1,5 @@
 import {sculptCanopies} from './canopy.js';
-import {rebuildCreature,animateCreature} from './models.js?v=0.8.0';
+import {rebuildCreature,animateCreature} from './models.js?v=0.8.1';
 import * as T from './three.module.js';
 import {seeded,terrain,ITEMS,PLACES} from './systems.js';
 const atlas={wood:0,stone:1,fiber:2,hide:3,rawmeat:4,meat:5,ore:6,coal:7,copper:8,scrap:9,bandage:10,healpotion:11,speedpotion:11,invisibility:11,sword:12,bow:13,pistol:14,woodarmor:15};
