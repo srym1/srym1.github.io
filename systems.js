@@ -113,4 +113,12 @@ export function terrain(x,z){
   return h;
 }
 export function reveal(set,x,z){let n=0;const cell=10;for(let a=-2;a<=2;a++)for(let b=-2;b<=2;b++){if(a*a+b*b>6)continue;const k=`${Math.floor(x/cell)+a},${Math.floor(z/cell)+b}`;if(!set.has(k)){set.add(k);n++;}}return n;}
-export function validSave(v){return v&&v.version===1&&Number.isFinite(v.x)&&Number.isFinite(v.z)&&Math.abs(v.x)<=LIMIT&&Math.abs(v.z)<=LIMIT&&Number.isFinite(v.hp)&&Number.isInteger(v.level)&&v.level>=1&&v.level<=10&&Number.isFinite(v.xp)&&v.xp>=0&&Array.isArray(v.bag)&&v.bag.length===48&&v.bag.every(i=>!i||(ITEMS[i.key]&&typeof i.id==='string'&&Number.isInteger(i.n)&&i.n>0&&i.n<=ITEMS[i.key].stack&&Number.isInteger(i.lvl)&&i.lvl>=1&&i.lvl<=5))&&Array.isArray(v.explored)&&Array.isArray(v.looted)&&Array.isArray(v.discovered);}
+export function validSave(v){
+ if(!v||![1,2].includes(v.version)||!Number.isFinite(v.x)||!Number.isFinite(v.z)||Math.abs(v.x)>LIMIT||Math.abs(v.z)>LIMIT||!Number.isFinite(v.hp)||v.hp<0||v.hp>100||!Number.isInteger(v.level)||v.level<1||v.level>10||!Number.isFinite(v.xp)||v.xp<0)return false;
+ if(!Array.isArray(v.bag)||v.bag.length!==48)return false;const ids=new Set();
+ for(const i of v.bag){if(i===null)continue;if(!i||!ITEMS[i.key]||typeof i.id!=='string'||!i.id||ids.has(i.id)||!Number.isInteger(i.n)||i.n<1||i.n>ITEMS[i.key].stack||!Number.isInteger(i.lvl)||i.lvl<1||i.lvl>5||(i.durability!==undefined&&(!Number.isFinite(i.durability)||i.durability<0||i.durability>100)))return false;ids.add(i.id);}
+ for(const k of ['explored','looted','discovered'])if(!Array.isArray(v[k])||v[k].length>10000||!v[k].every(x=>typeof x==='string'))return false;
+ if(v.harvests&&Object.values(v.harvests).some(n=>!Number.isInteger(n)||n<0))return false;
+ for(const key of ['drops','graves'])if(v[key]!==undefined&&(!Array.isArray(v[key])||v[key].length>500||!v[key].every(o=>Number.isFinite(o.x)&&Number.isFinite(o.z)&&Math.abs(o.x)<=LIMIT&&Math.abs(o.z)<=LIMIT&&Array.isArray(o.loot)&&o.loot.length<100&&o.loot.every(row=>Array.isArray(row)&&ITEMS[row[0]]&&Number.isInteger(row[1])&&row[1]>0&&row[1]<=999&&(row[2]===undefined||Number.isInteger(row[2])&&row[2]>=1&&row[2]<=5)))))return false;
+ return true;
+}

@@ -1,6 +1,8 @@
 import * as T from './three.module.js';
 // Shared sculpted surfaces: continuous profiles, rounded joints and articulated silhouettes.
 const sphere=new T.SphereGeometry(1,20,14), cache=new Map();
+// The sculpted sphere and palette materials are shared; generated bones/blades are owned by the rig.
+export function releaseViewmodel(root){const geometries=new Set();root.traverse(o=>{if(o.geometry&&o.geometry!==sphere)geometries.add(o.geometry);});for(const geometry of geometries)geometry.dispose();}
 function mat(color,metal=false){const k=color+metal;if(!cache.has(k))cache.set(k,new T.MeshStandardMaterial({color,roughness:metal?.43:.86,metalness:metal?.55:0}));return cache.get(k);}
 function mesh(g,geo,color,p=[0,0,0],s=[1,1,1],metal=false){const m=new T.Mesh(geo,mat(color,metal));m.position.fromArray(p);m.scale.fromArray(s);m.castShadow=true;m.receiveShadow=true;g.add(m);return m;}
 function oval(g,c,p,s){return mesh(g,sphere,c,p,s);}
