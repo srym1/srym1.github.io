@@ -49,30 +49,33 @@
 #site .gcard .playbtn:hover{box-shadow:0 0 42px rgba(var(--world-rgb),.55)}
 @media(prefers-reduced-motion:reduce){#site *,#site *:before,#site *:after{animation:none!important;transition:none!important}}
 
-/* Heart of the Woods: a playable forest chapter, with its own cinematic cover. */
-#site .gcard.heart-feature{grid-column:1/-1;cursor:pointer;border-color:#bda17c55;background:#0b1716;--heart-cover:url('heart-card-v5.png')}
-#site .heart-feature .art{aspect-ratio:16/6.4;background:#0b1716}
-.heart-landscape{position:absolute;inset:0;background:var(--heart-cover) 50% 55%/cover no-repeat;transform:scale(1.025);transition:transform 1.2s ease,filter .8s ease}
+
+/* One featured game, three equal square cards. Shared studio button design. */
+#site #game-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+#site #game-grid .gcard.main{grid-column:1/-1}
+#site #game-grid .gcard:not(.main){grid-column:auto}
+#site #game-grid .gcard:not(.main) .art{aspect-ratio:1}
+#site #game-grid .gcard:not(.main) .body{padding:22px;gap:14px}
+#site #game-grid .gcard:not(.main) h2{font-size:26px;color:#eee7fa}
+#site .gcard.heart-feature{cursor:pointer;background:#0b1716;--heart-cover:url('heart-card-v5.png')}
+#site .heart-feature .art{background:#0b1716}
+.heart-landscape{position:absolute;inset:0;background:var(--heart-cover) 36% center/cover no-repeat;transform:scale(1.025);transition:transform 1.2s ease,filter .8s ease}
 #site .heart-feature:hover .heart-landscape,#site .heart-feature:focus-visible .heart-landscape{transform:scale(1.07);filter:brightness(1.12)}
-#site .heart-feature .shade{background:linear-gradient(0deg,#071414fa 0%,#07141490 30%,transparent 70%),linear-gradient(270deg,#081a1745,transparent 65%)}
-#site .heart-feature .body{padding:28px 32px;align-items:flex-end;gap:25px}
-#site .heart-feature h2{font-size:clamp(30px,4.3vw,52px);color:#fff1d4;text-shadow:0 3px 30px #0009;letter-spacing:0;margin:7px 0 0}
-.heart-kicker{display:block;font-size:9px;letter-spacing:3px;color:#dfc9a0;direction:ltr;text-align:right}
-.heart-tagline{font-size:14px;color:#dacdb7;margin:8px 0 12px;line-height:1.8}
-#site .heart-feature .meta{gap:8px;margin-top:0;color:#c2d4c6;font-size:10px}
-#site .heart-feature .meta span{border-color:#e2d0a333;background:#0c1c1980;padding:4px 12px}
-#site .heart-feature .badge{background:#142c24b8;color:#ebdfc2;border:1px solid #d7c29255;letter-spacing:0;font-size:11px}
-#site .heart-feature .infohint{color:#ebdfc2}
-#site .heart-feature .playbtn{min-width:155px;display:flex;align-items:center;justify-content:space-between;gap:22px;padding:16px 22px;white-space:nowrap;background:#c6a0ff;color:#231332;border:1px solid #e4ccff70}
-#site .heart-feature .playbtn b{font-size:20px;font-weight:400;transition:transform .3s}
-#site .heart-feature .playbtn:hover b{transform:translate(-3px,-3px)}
+#site .heart-feature .shade{background:linear-gradient(0deg,#071414fa 0%,#071414b0 34%,transparent 72%)}
+#site .heart-feature h2{margin:0;letter-spacing:0}
+#site .heart-feature .meta{color:#c2c1d1}
+#site .heart-feature .badge{background:#231831db;color:#eee7fa;border-color:#b880ff44}
+#site .heart-feature .infohint{color:#eee7fa}
+#site .heart-feature .heart-copy{width:100%}
 .heart-cover-mist{position:absolute;inset:15% -25% -20%;background:radial-gradient(ellipse at 70% 55%,#ccded31b,transparent 48%);animation:heart-mist-drift 18s ease-in-out infinite alternate;pointer-events:none}
 .heart-cover-embers{position:absolute;inset:0;pointer-events:none}
-.heart-cover-embers i{position:absolute;left:22%;top:66%;width:3px;height:3px;background:#ffc673;border-radius:50%;box-shadow:0 0 12px #ffbe72;animation:heart-ember 7s ease-in-out infinite;opacity:0}
-.heart-cover-embers i:nth-child(2){left:24%;top:68%;animation-delay:-2s}.heart-cover-embers i:nth-child(3){left:21%;top:72%;animation-delay:-4s}.heart-cover-embers i:nth-child(4){left:26%;top:67%;animation-delay:-5s}.heart-cover-embers i:nth-child(5){left:23%;top:69%;animation-delay:-1s}
+.heart-cover-embers i{position:absolute;left:12%;top:66%;width:3px;height:3px;background:#ffc673;border-radius:50%;box-shadow:0 0 12px #ffbe72;animation:heart-ember 7s ease-in-out infinite;opacity:0}
+.heart-cover-embers i:nth-child(2){left:14%;top:68%;animation-delay:-2s}.heart-cover-embers i:nth-child(3){left:11%;top:72%;animation-delay:-4s}.heart-cover-embers i:nth-child(4){left:16%;top:67%;animation-delay:-5s}.heart-cover-embers i:nth-child(5){left:13%;top:69%;animation-delay:-1s}
 #site[data-world=heart] .world-forest{background-image:linear-gradient(0deg,#10091cd9,#29123ba6),url('heart-card-v5.png');opacity:.72;transform:scale(1.04);background-position:center}
 @keyframes heart-mist-drift{to{transform:translateX(-7%) translateY(-3%)}}
 @keyframes heart-ember{0%{opacity:0;transform:translate(0,0)}25%{opacity:.8}80%{opacity:0;transform:translate(14px,-75px)}100%{opacity:0}}
-@media(max-width:600px){#site .heart-feature .art{aspect-ratio:1.25}#site .heart-feature .body{padding:22px 20px;gap:12px;align-items:flex-end}#site .heart-feature h2{font-size:31px}.heart-kicker{font-size:7px;letter-spacing:1.7px}.heart-tagline{font-size:11px;max-width:190px}#site .heart-feature .playbtn{min-width:0;padding:13px 15px;gap:12px;font-size:11px}#site .heart-feature .meta{font-size:9px}#site .heart-feature .badge{font-size:9px}.heart-landscape{background-position:38% center}}
+@media(max-width:900px){#site #game-grid{gap:14px}#site #game-grid .gcard:not(.main) .body{padding:17px}#site #game-grid .gcard:not(.main) h2{font-size:22px}}
+@media(max-width:600px){#site #game-grid{grid-template-columns:1fr;gap:16px}#site #game-grid .gcard:not(.main) .body{padding:22px}#site #game-grid .gcard:not(.main) h2{font-size:26px}}
 @media(prefers-reduced-motion:reduce){.heart-cover-mist,.heart-cover-embers i{animation:none}.heart-cover-embers i{opacity:.5}.heart-landscape{transition:none}}
-@media(max-width:600px){#site .gcard.heart-feature[data-theme=heart] .art{aspect-ratio:1.05}#site .gcard.heart-feature[data-theme=heart] .body{padding:20px;flex-direction:column;align-items:stretch;gap:12px}#site .gcard.heart-feature[data-theme=heart] h2{font-size:31px}#site .gcard.heart-feature[data-theme=heart] .playbtn{align-self:flex-start;padding:11px 18px}.heart-tagline{max-width:none;margin:5px 0}.heart-copy{width:100%}}
+
+#site .heart-feature .playbtn{margin-inline-start:auto}
