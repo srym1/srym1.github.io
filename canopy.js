@@ -1,0 +1,7 @@
+import * as T from './three.module.js';
+export function sculptCanopies(world,oldCanopy){oldCanopy.visible=false;world.leaves.visible=false;world.pines.visible=false;const t={value:0};
+ const texture=typeof document!=='undefined'&&document.createElementNS?new T.TextureLoader().load('./cedar-bough-v4.png'):new T.Texture();texture.colorSpace=T.SRGBColorSpace;texture.anisotropy=4;
+ const m=new T.MeshStandardMaterial({color:'#b6c9b6',map:texture,alphaTest:.38,side:T.DoubleSide,roughness:1,emissive:'#354b40',emissiveIntensity:.25});m.onBeforeCompile=s=>{s.uniforms.cedarTime=t;s.vertexShader='uniform float cedarTime;\n'+s.vertexShader;s.vertexShader=s.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\n transformed.y += sin(cedarTime*.9+instanceMatrix[3].z*.09+position.x*2.0)*.024;');};
+ const d=new T.Object3D(),geo=new T.PlaneGeometry(1,1,3,2),count=world.treeData.length*30,inst=new T.InstancedMesh(geo,m,count);let index=0;
+ for(const a of world.treeData)for(let tier=0;tier<5;tier++)for(let branch=0;branch<6;branch++){const angle=branch*Math.PI/3+tier*1.17+a.x*.31,width=a.r*(a.pine?2.5-tier*.36:2.05-Math.abs(tier-2)*.2),rad=width*.38;d.position.set(a.x+Math.cos(angle)*rad,a.y+a.h*(.52+tier*.105),a.z-Math.sin(angle)*rad);d.rotation.set((branch%2?.38:-.38),angle,(branch%3-1)*.13);d.scale.set(width,width*.62,1);d.updateMatrix();inst.setMatrixAt(index++,d.matrix);}
+ inst.castShadow=true;inst.receiveShadow=false;world.scene.add(inst);return time=>t.value=time;}

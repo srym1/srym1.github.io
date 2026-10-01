@@ -5,8 +5,8 @@
   <!-- يخلّي المتصفّح يتأكد من وجود نسخة أحدث بدل ما يعرض المخزّنة ١٠ دقائق -->
   <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>RYM — قصر الغابة | لعبة سيرفايفل عربية تلعبها في المتصفح</title>
-<meta name="description" content="قصر الغابة من RYM — لعبة رعب وسيرفايفل عربية بمنظور أول تلعبها مجاناً في المتصفح بدون تحميل. ٣ مراحل، ٢٥ راوند، ١٨ نوع وحش، أسلحة وتطويرات وصناديق سرّية.">
+<title>RYM — استوديو ألعاب | اكتشف ألعابنا</title>
+<meta name="description" content="قصر الغابة من RYM — لعبة رعب وسيرفايفل عربية بمنظور أول تلعبها مجاناً في المتصفح بدون تحميل. عوالم غامضة، أسلحة وتطويرات وصناديق سرّية.">
 <meta name="keywords" content="العاب عربية, لعبة سيرفايفل, العاب رعب, لعبة متصفح, قصر الغابة, RYM, العاب اون لاين, لعبة زومبي عربية, العاب سعودية">
 <meta name="author" content="RYM Game Studio">
 <meta name="theme-color" content="#0b120f">
@@ -108,6 +108,16 @@ body.th-soon{
   --card:rgba(255,255,255,.72);
   --glow:rgba(70,85,100,.14);
 }
+/* --- ثيم قلب الغابة --- */
+body.th-heart{
+  --bgA:#0c1c19; --bgB:#03090a;
+  --acc:#57d6a8; --acc2:#7fa3c4;
+  --txt:#dff0e9; --dim:#7a9690;
+  --line:rgba(87,214,168,.22);
+  --card:rgba(8,22,19,.74);
+  --glow:rgba(60,200,150,.18);
+}
+
 
 #site{position:fixed;inset:0;overflow-y:auto;overflow-x:hidden;z-index:50}
 #bg{position:fixed;inset:0;pointer-events:none;z-index:0}
@@ -131,6 +141,13 @@ body.th-soon{
     radial-gradient(ellipse 90% 60% at 20% 105%, #c8d0d8 0%, transparent 55%),
     linear-gradient(180deg,#e9edf1 0%,#ccd3da 50%,#aeb7c0 100%);
 }
+.bg-layer[data-th="heart"]{
+  background:
+    radial-gradient(ellipse 115% 75% at 50% -12%, #12463a 0%, transparent 58%),
+    radial-gradient(ellipse 85% 55% at 18% 105%, #0a3040 0%, transparent 55%),
+    linear-gradient(180deg,#0c1c19 0%,#071310 45%,#03090a 100%);
+}
+
 /* هالة متحرّكة تتلوّن مع الثيم */
 .bg-orb{position:absolute;inset:0;transition:background .75s ease}
 .bg-orb::before,.bg-orb::after{
@@ -229,6 +246,85 @@ body.th-soon .stitle h1{text-shadow:0 0 60px rgba(120,140,160,.4),0 4px 14px rgb
 .gcard.soon .meta{color:#5f6a74}
 .gcard.soon .meta span{border-color:rgba(50,62,74,.22);background:rgba(255,255,255,.5)}
 .gcard.soon .badge{background:rgba(90,102,114,.92)}
+
+/* ==================== بطاقة قلب الغابة — قيد التطوير ==================== */
+.gcard.dev{cursor:default}
+.gcard.dev .art{background:linear-gradient(180deg,#0a2320 0%,#0d3a34 42%,#123f39 58%,#04100e 100%)}
+.gcard.dev .shade{background:linear-gradient(180deg,rgba(3,9,10,0) 30%,rgba(3,9,10,.55) 55%,rgba(3,9,10,.93) 100%)}
+.gcard.dev h2{color:#eafaf3;text-shadow:0 2px 20px rgba(0,0,0,.9)}
+.gcard.dev .meta{color:#a6cabb}
+.gcard.dev .meta span{border-color:rgba(87,214,168,.3);background:rgba(4,16,13,.65)}
+.gcard.dev .badge{background:linear-gradient(90deg,#176b52,#57d6a8);color:#04150f;
+  box-shadow:0 6px 22px rgba(60,200,150,.35)}
+.gcard.dev .soonbtn{color:#7fe6c0;border-color:rgba(87,214,168,.42);
+  background:rgba(6,26,21,.72);letter-spacing:.4px}
+.gcard.dev:hover{box-shadow:0 34px 84px rgba(0,0,0,.7),0 0 80px rgba(60,200,150,.28)}
+
+.heart-art{position:absolute;inset:0;overflow:hidden}
+
+/* ضوء ينفذ من بين الأشجار */
+.heart-art .ha-glow{position:absolute;left:34%;top:2%;width:86%;height:62%;transform:translateX(-50%);
+  background:radial-gradient(ellipse 60% 52% at 50% 62%, rgba(160,240,210,.34) 0%, rgba(120,200,190,.14) 42%, transparent 72%);
+  animation:haBreath 8s ease-in-out infinite}
+.heart-art .ha-shaft{position:absolute;left:24%;top:-30%;width:17%;height:104%;
+  background:linear-gradient(180deg, rgba(200,250,228,.22), transparent 74%);
+  transform:skewX(-12deg);filter:blur(10px);animation:haBreath 11s ease-in-out infinite reverse}
+
+/* الرقيم الأزرق — رمز اللغز */
+.heart-art .ha-rune{position:absolute;left:27%;top:27%;width:17%;aspect-ratio:1;transform:translate(-50%,-50%);
+  min-width:46px}
+.heart-art .ha-rune svg{width:100%;height:100%;overflow:visible;
+  filter:drop-shadow(0 0 10px rgba(127,180,215,.9))}
+.heart-art .ha-rune circle,.heart-art .ha-rune path{fill:none;stroke:#9fd0ea;stroke-linecap:round}
+.heart-art .ha-rune .r1{stroke-width:2.4;stroke-dasharray:16 12;transform-origin:50% 50%;
+  animation:haSpin 26s linear infinite}
+.heart-art .ha-rune .r2{stroke-width:1.6;stroke-dasharray:5 10;opacity:.8;transform-origin:50% 50%;
+  animation:haSpin 17s linear infinite reverse}
+.heart-art .ha-rune .r3{stroke-width:2.6;stroke:#7ff0c4;stroke-linejoin:round;opacity:.95}
+.heart-art .ha-rune .r4{stroke:none;fill:#7ff0c4;transform-origin:50% 50%;
+  animation:haPulse 3.6s ease-in-out infinite}
+
+/* غبار متطاير — متفرّق لا نسيج */
+.heart-art .ha-motes{position:absolute;inset:-20% 0;opacity:.9;pointer-events:none;
+  background-image:
+    radial-gradient(circle 1.6px, rgba(215,255,238,.95), transparent 100%),
+    radial-gradient(circle 1.1px, rgba(165,225,250,.85), transparent 100%),
+    radial-gradient(circle 1.9px, rgba(190,250,225,.7), transparent 100%);
+  background-size:170px 210px, 115px 155px, 230px 265px;
+  background-position:22px 10px, 78px 60px, 140px 120px;
+  animation:haRise 26s linear infinite}
+
+/* ضباب بين طبقات الشجر */
+.heart-art .ha-fog{position:absolute;left:-45%;width:190%;pointer-events:none}
+.heart-art .f1{bottom:22%;height:30%;
+  background:radial-gradient(ellipse 32% 100% at 28% 50%, rgba(175,235,215,.30), transparent 72%),
+             radial-gradient(ellipse 28% 90% at 70% 55%, rgba(150,200,225,.24), transparent 72%);
+  animation:haFog 40s linear infinite}
+.heart-art .f2{bottom:4%;height:24%;
+  background:radial-gradient(ellipse 40% 100% at 58% 50%, rgba(205,250,235,.30), transparent 74%);
+  animation:haFog 28s linear infinite reverse}
+
+/* صفوف الشجر — من الخلف للأمام */
+.heart-art .ha-tree{position:absolute;bottom:0;display:block;width:128%;left:-14%}
+.heart-art .ha-tree path{stroke:none}
+.heart-art .t3{height:46%;animation:haDrift 66s ease-in-out infinite}
+.heart-art .t2{height:60%;animation:haDrift 47s ease-in-out infinite reverse}
+.heart-art .t1{height:74%;animation:haDrift 35s ease-in-out infinite}
+.heart-art .t3 path{fill:#123a33;opacity:.85}
+.heart-art .t2 path{fill:#0a2622}
+.heart-art .t1 path{fill:#03100e}
+
+@keyframes haDrift{0%,100%{transform:translateX(0)}50%{transform:translateX(-3%)}}
+@keyframes haFog{0%{transform:translateX(-13%)}100%{transform:translateX(13%)}}
+@keyframes haSpin{to{transform:rotate(360deg)}}
+@keyframes haPulse{0%,100%{transform:scale(1);opacity:.9}50%{transform:scale(1.9);opacity:.3}}
+@keyframes haBreath{0%,100%{opacity:.5}50%{opacity:1}}
+@keyframes haRise{0%{background-position:22px 210px, 78px 155px, 140px 265px}
+  100%{background-position:22px 0px, 78px 0px, 140px 0px}}
+@media (prefers-reduced-motion: reduce){
+  .heart-art *{animation:none !important}
+}
+
 .soonbtn{pointer-events:none;font-size:14px;font-weight:800;color:#4a555f;white-space:nowrap;
   border:1.5px solid rgba(70,85,100,.32);border-radius:11px;padding:11px 22px;background:rgba(255,255,255,.55)}
 
@@ -1343,12 +1439,14 @@ html[dir="ltr"] #fsbtn{left:50%;right:auto}
 .binfo::-webkit-scrollbar{width:8px}
 .binfo::-webkit-scrollbar-thumb{background:#2a3d34;border-radius:4px}
 </style>
+<link rel="stylesheet" href="site-improvements.css">
+<link rel="stylesheet" href="living-world.css">
 </head>
 <body>
 
 <!-- ==================== الموقع ==================== -->
-<div id="site">
-  <div id="bg">
+<div id="site" data-world="base"><a class="skip-link" href="#main-content">تجاوز إلى المحتوى</a>
+  <div id="world-stage" aria-hidden="true"><div class="world-sky"></div><div class="world-moon"></div><div class="world-forest"></div><div class="world-manor"></div><div class="world-rune">◇</div><div class="world-grid"></div><div class="world-fog fog-one"></div><div class="world-fog fog-two"></div><div class="world-bats"></div><div class="world-motes"></div><div class="world-vignette"></div></div><div id="bg">
     <div class="bg-layer on" data-th="base"></div>
     <div class="bg-layer" data-th="manor"></div>
     <div class="bg-layer" data-th="soon"></div>
@@ -1394,7 +1492,7 @@ html[dir="ltr"] #fsbtn{left:50%;right:auto}
   <!-- تسجيل الدخول -->
   <div id="auth" class="hide">
     <div class="authbox">
-      <button class="authx" id="auth-close">✕</button>
+      <button class="authx" id="auth-close" aria-label="إغلاق نافذة الحساب">✕</button>
       <div class="authlogo">
         <svg viewBox="0 0 64 64" width="46" height="46" fill="none">
           <path d="M32 3 58 18v28L32 61 6 46V18z" stroke="currentColor" stroke-width="2.6" fill="currentColor" opacity=".9" fill-opacity=".06"/>
@@ -1405,18 +1503,18 @@ html[dir="ltr"] #fsbtn{left:50%;right:auto}
 
       <div id="auth-in">
         <h3>حسابك في RYM</h3>
-        <p class="authsub">اختر اسمك — حفظك وتقدّمك يرتبط فيه</p>
+        <p class="authsub">ملف لاعب محلي على هذا المتصفح. لا تستخدم كلمة سر خاصة بحساباتك الأخرى.</p>
 
-        <label class="authlab">اسم اللاعب</label>
+        <label class="authlab" for="auth-name">اسم اللاعب</label>
         <input id="auth-name" class="authinput" type="text" maxlength="16" autocomplete="off"
                placeholder="اكتب اسمك هنا…" dir="auto">
 
-        <label class="authlab" id="auth-passlab">كلمة السر</label>
+        <label class="authlab" id="auth-passlab" for="auth-pass">كلمة السر</label>
         <input id="auth-pass" class="authinput" type="password" maxlength="32" autocomplete="off"
                placeholder="اكتب كلمة سر تحفظها…" dir="ltr">
         <button type="button" id="auth-eye" class="autheye">👁 أظهر كلمة السر</button>
 
-        <div id="auth-msg" class="authmsg"></div>
+        <div id="auth-msg" class="authmsg" role="status" aria-live="polite"></div>
 
         <div class="authrules">
           <div><b>٤ حروف فأكثر</b> للاسم — الأسماء الثلاثية محجوزة</div>
@@ -1447,17 +1545,13 @@ html[dir="ltr"] #fsbtn{left:50%;right:auto}
     </div>
   </div>
 
-  <div class="shero">
-    <div class="stitle">
-      <h1>RYM</h1>
-      <div class="en">ORIGINAL ARABIC GAMES</div>
-      <div class="rule"></div>
-    </div>
-
+  <main class="shero" id="main-content" tabindex="-1">
+<div class="stitle"><h1>RYM</h1><div class="en">GAME STUDIO</div><div class="rule"></div></div>
     <div class="grid" id="game-grid"></div>
-
-
-  </div>
+    <section id="player-guide" class="player-guide" aria-labelledby="guide-title"><p class="eyebrow">جاهز للمغامرة؟</p><h2 id="guide-title">كل اللي تحتاجه قبل البداية</h2><div class="guide-grid"><article><span class="guide-number">01</span><h3>اختر طريقة لعبك</h3><p>على الكمبيوتر، استخدم لوحة المفاتيح والماوس. على الجوال، استخدم أزرار اللمس؛ الوضع الأفقي يعطيك مساحة أكبر.</p></article><article><span class="guide-number">02</span><h3>اضبط تجربتك</h3><p>راجع التحكم والصوت من إعدادات اللعبة قبل البداية. تقدر ترجع للقائمة وتكمل لاحقًا.</p></article><article><span class="guide-number">03</span><h3>احتفظ بتقدّمك</h3><p>احفظ من قائمة اللعبة، واحتفظ بنسخة من كود الحفظ إذا بتغيّر جهازك أو تمسح بيانات المتصفح.</p></article></div></section>
+    <section class="site-faq" aria-labelledby="faq-title"><h2 id="faq-title">أسئلة اللاعبين</h2><details><summary>هل أحتاج أسجّل عشان ألعب؟</summary><p>لا. تقدر تبدأ مباشرة. ملف اللاعب اختياري ويساعدك ترتّب تقدّمك على نفس المتصفح.</p></details><details><summary>هل حسابي ينتقل بين الأجهزة؟</summary><p>الحسابات والحفظ محلية حاليًا، وما فيه مزامنة سحابية. استخدم كود الحفظ لنقل تقدّمك يدويًا.</p></details><details><summary>وش طبيعة محتوى اللعبة؟</summary><p>قصر الغابة لعبة رعب وبقاء فيها قتال ومشاهد مخيفة. اختر التجربة اللي تناسبك، واضبط الصوت قبل البداية.</p></details><details><summary>كيف تُحفظ بياناتي؟</summary><p>اسم اللاعب والصورة والتقدّم وبيانات الدخول تُحفظ في هذا المتصفح. رمز الدخول المحلي ليس حسابًا آمنًا على الإنترنت؛ لا تستخدم كلمة سر تستعملها في خدمات ثانية. حذف بيانات الموقع قد يحذف الحفظ.</p></details></section>
+    <footer class="site-footer"><b>RYM <span>GAME STUDIO</span></b><a href="#main-content">العودة للأعلى ↑</a><p>ألعاب عربية، وقصص تستاهل التجربة.</p></footer>
+  </main>
 </div>
 
 <!-- ============ صفحة تفاصيل اللعبة ============ -->
@@ -3685,6 +3779,7 @@ const LANG = {
   /* --------- مراقبة التغييرات عشان المحتوى الجديد ينترجم لحاله --------- */
   watch() {
     if (this.obs || typeof MutationObserver === 'undefined') return;
+    if (!document.body) { document.addEventListener('DOMContentLoaded', () => this.watch(), { once: true }); return; }
     this.obs = new MutationObserver(muts => {
       if (this.cur !== 'en') return;
       for (const m of muts) {
@@ -16261,7 +16356,15 @@ const GAMES = [
       ['1 2 3', 'تبديل سلاح'], ['Shift', 'جري'], ['TAB', 'تكبير الخريطة'], ['⛶', 'ملء الشاشة'],
     ],
   },
-  { id: 'slot2', theme: 'soon', ready: false, name: 'لعبة قادمة', meta: ['الخانة ٢'], badge: 'قريباً' },
+  {
+    id: 'heart', theme: 'heart', ready: false, dev: true,
+    name: 'قلب الغابة', en: 'HEART OF THE WOODS',
+    badge: 'قيد التطوير',
+    soonbtn: 'قيد التطوير — قريباً',
+    meta: ['سيرفايفل · منظور أول', '٧ مناطق · عالم مفتوح'],
+    lead: 'صحيت في غابة ما تعرف كيف وصلتها. نقطة واحدة آمنة، وسبع مناطق حولها كل وحدة أشرس من اللي قبلها — مستنقع وثلج وعشّ عناكب وقرية غيلان وعرين ذئاب. تجمع وتصنّع وتبني وتنقذ ناجين، كل واحد منهم يحمل جزءاً من الحكاية. تطوّر سلاحك عشر مرات، وتلبس تعاويذ بعضها ملعون ما ينخلع إلا بمكان واحد في الخريطة. وفي قلب الغابة شي ينتظر — وما تقدر توصله إلا إذا فتحت كل شي قبله.',
+    art: `<div class="heart-art"><div class="ha-glow"></div><div class="ha-shaft"></div><svg class="ha-tree t3" viewBox="0 0 400 100" preserveAspectRatio="none"><path d="M0,100 L0,40 L17,34 L34,67 L52,33 L65,62 L83,35 L95,61 L112,38 L124,61 L142,32 L152,66 L169,32 L181,60 L199,41 L209,60 L222,39 L232,67 L247,35 L260,68 L273,32 L287,67 L297,32 L308,67 L322,36 L340,61 L354,37 L367,68 L381,42 L392,61 L400,41 L400,100 Z"/></svg><div class="ha-fog f1"></div><svg class="ha-tree t2" viewBox="0 0 400 100" preserveAspectRatio="none"><path d="M0,100 L0,30 L23,27 L43,74 L59,20 L79,76 L100,28 L115,71 L137,18 L155,75 L171,21 L191,78 L212,25 L234,72 L252,22 L273,78 L291,20 L312,74 L331,20 L349,76 L371,20 L388,74 L400,19 L400,100 Z"/></svg><div class="ha-rune"><svg viewBox="0 0 100 100"><circle class="r1" cx="50" cy="50" r="38"/><circle class="r2" cx="50" cy="50" r="28"/><path class="r3" d="M50 30 L68 62 L32 62 Z"/><circle class="r4" cx="50" cy="50" r="5"/></svg></div><div class="ha-fog f2"></div><svg class="ha-tree t1" viewBox="0 0 400 100" preserveAspectRatio="none"><path d="M0,100 L0,18 L26,11 L53,90 L81,3 L107,86 L136,6 L163,82 L190,2 L211,83 L232,8 L260,90 L281,7 L308,85 L332,4 L361,87 L389,9 L400,90 L400,100 Z"/></svg><div class="ha-motes"></div></div>`,
+  },
   { id: 'slot3', theme: 'soon', ready: false, name: 'لعبة قادمة', meta: ['الخانة ٣'], badge: 'قريباً' },
   { id: 'slot4', theme: 'soon', ready: false, name: 'لعبة قادمة', meta: ['الخانة ٤'], badge: 'قريباً' },
 ];
@@ -16275,7 +16378,7 @@ const Theme = {
     if (this.cur === t) return;
     this.cur = t;
     const b = document.body;
-    b.classList.remove('th-manor', 'th-soon');
+    b.classList.remove('th-manor', 'th-soon', 'th-heart');
     if (t !== 'base') b.classList.add('th-' + t);
     document.querySelectorAll('.bg-layer').forEach(l => {
       l.classList.toggle('on', l.dataset.th === t);
@@ -16411,13 +16514,17 @@ const UI = {
               <h2>${g.name}</h2>
               <div class="meta">${meta}</div>
             </div>
-            <div class="playbtn">${g.btn} <b>PLAY</b></div>
+            <button type="button" class="playbtn" aria-label="العب ${g.name}">${g.btn} <b>PLAY</b></button>
           </div>`;
         const cv = card.querySelector('canvas');
         if (COVER) {
           cv.width = COVER.width; cv.height = COVER.height;
           cv.getContext('2d').drawImage(COVER, 0, 0);
         }
+        card.tabIndex = 0;
+        card.setAttribute('role', 'button');
+        card.setAttribute('aria-label', 'تفاصيل ' + g.name);
+        card.addEventListener('keydown', ev => { if (ev.target === card && (ev.key === 'Enter' || ev.key === ' ')) { ev.preventDefault(); this.openInfo(g); } });
         card.addEventListener('click', () => this.openInfo(g));
         card.querySelector('.playbtn').addEventListener('click', ev => {
           ev.stopPropagation();
@@ -18510,5 +18617,8 @@ const Shop = {
     </div>
   </div>
 
-</body>
+
+<script src="living-world.js"></script>
+<script src="heart-launcher.js"></script>
+<script src="release.js" defer></script></body>
 </html>
