@@ -5,7 +5,7 @@
     overlay = document.createElement('div'); overlay.id = 'heart-game-overlay';
     overlay.style.cssText = 'position:fixed;inset:0;z-index:10000;background:#10231f';
     const frame = document.createElement('iframe');
-    frame.title = 'قلب الغابة — المنطقة الأولى'; frame.src = 'heart.html?v=0.15.0';
+    frame.title = 'قلب الغابة — المنطقة الأولى'; frame.src = 'heart.html?v=0.16.0';
     frame.allow = 'fullscreen; autoplay'; frame.style.cssText = 'width:100%;height:100%;border:0;display:block';
     overlay.append(frame); document.body.append(overlay); document.getElementById('site').classList.add('hide');
     history.replaceState(null, '', '#heart'); frame.addEventListener('load', () => frame.focus());
