@@ -1,3 +1,4 @@
+import {buildOreNode,ORES} from './mining.js';
 import * as T from './three.module.js';
 import {PLACES,LIMIT,terrain,seeded} from './systems.js';
 const rnd=seeded(28714);
@@ -40,7 +41,7 @@ export function buildWorld(scene){
   }
   cabin(49,-4,'hut1');cabin(68,-6,'hut2');cabin(61,17,'hut3');cabin(-30,-57,'hut4');
   function cave(p){let g=new T.Group();g.position.set(p.x,0,p.z);scene.add(g);const rockMat=mat('#495448');for(let side of [-1,1]){for(let j=0;j<6;j++){const r=mesh(sphereG,rockMat,g,side*(5+rnd()),2+rnd(),-j*3,3,3.5+rnd(),3.2);r.rotation.y=rnd()*3;}collider(p.x+side*5,p.z-7,1.7,10);}for(let j=0;j<6;j++)mesh(sphereG,rockMat,g,0,5.5,-j*3,5,2.1,3.2);mesh(boxG,mats.dark,g,0,2.5,-18,9,5,2);collider(p.x,p.z-18,5,1); // a real covered tunnel
-    for(let j=0;j<10;j++){const x=(rnd()-.5)*7,z=-2-rnd()*14;let crystal=mesh(coneG,mat('#839e9b',{emissive:'#3b645e',emissiveIntensity:.25}),g,x,.45,z,.25,.9,.3);crystal.material.color.set(j%3===0?'#343d39':j%3===1?'#b0784b':'#839e9b');resources.push({id:p.id+'ore'+j,x:p.x+x,z:p.z+z,y:.5,key:j%3===0?'coal':j%3===1?'copper':'ore',name:j%3===0?'عروق فحم':j%3===1?'عروق نحاس':'عروق حديد',n:1,hits:3,mesh:crystal});}
+    for(let j=0;j<10;j++){const x=(rnd()-.5)*7,z=-2-rnd()*14;const key=j%3===0?'coal':j%3===1?'copper':'ore',id=p.id+'ore'+j,crystal=buildOreNode(key,id);crystal.position.set(x,0,z);g.add(crystal);resources.push({id,x:p.x+x,z:p.z+z,y:.55,key,name:ORES[key].name,n:1,hits:3,maxHits:3,mesh:crystal});}
     const lamp=new T.PointLight('#82bfc2',9,18,2);lamp.position.set(0,3,-10);g.add(lamp);chest(p.x,p.z-14,p.id+'chest',p.level);for(let j=0;j<3;j++)spawnAnimal('spider',p.x+(j-1)*2,p.z-4-j*3,p.level+j);
   }
   const enemyMats={chicken:mat('#c3b69a'),wolf:mat('#777e77'),bear:mat('#69513d'),deer:mat('#a48a62'),rabbit:mat('#b5a990'),spider:mat('#40364b'),mutant:mat('#697965')};

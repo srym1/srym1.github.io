@@ -1,3 +1,4 @@
+import {ORES,buildOreNode,restoreOre,hitOre,animateOre,miningProgress} from './mining.js';
 import {POTIONS,DRINK_TIME,usePotion,potionStatuses} from './potion-system.js';
 import {armorAppearance,armorIcon} from './armor-art.js';
 import {fusionPlan,confirmFusion} from './fusion.js';
@@ -21,10 +22,10 @@ import {createCameraRig} from './camera-rig.js';
 import {createCombatClock,weaponDamage,incomingDamage} from './combat-core.js';
 const input=createInput(),controller=createPlayerController(),cameraRig=createCameraRig(),combat=createCombatClock();
 import * as T from './three.module.js';
-import {ITEMS,RECIPES,newBag,count,add,consume,move,mergeAll,craft,PLACES,LIMIT,MAP_LIMIT,terrain,reveal,validSave,seeded,rarity,RARITIES,chestLoot,rollPet,canMerge,splitDeathResources} from './systems.js?v=0.14.0';
+import {ITEMS,RECIPES,newBag,count,add,consume,move,mergeAll,craft,PLACES,LIMIT,MAP_LIMIT,terrain,reveal,validSave,seeded,rarity,RARITIES,chestLoot,rollPet,canMerge,splitDeathResources} from './systems.js?v=0.15.0';
 import {buildWorld} from './world.js';
-import {artDirection,itemArt,lootFeed,regionName} from './art.js?v=0.14.0';
-import {forestPresentation,forestAudio,illustratedMap} from './forest.js?v=0.14.0';
+import {artDirection,itemArt,lootFeed,regionName} from './art.js?v=0.15.0';
+import {forestPresentation,forestAudio,illustratedMap} from './forest.js?v=0.15.0';
 const $=id=>document.getElementById(id),canvas=$('world');
 let renderer;
 try{renderer=new T.WebGLRenderer({canvas,antialias:true,powerPreference:'high-performance'});}catch(e){$('error').textContent='الرسم ثلاثي الأبعاد غير متاح في هذا المتصفح. جرّب متصفحًا يدعم WebGL 2.';throw e;}
@@ -42,14 +43,15 @@ $('perf').hidden=!new URLSearchParams(location.search).has('qa');let saveLoaded=
 const restored=trial?{data:null}:loadSave(localStorage,SAVE,validSave);try{const raw=restored.data;if(validSave(raw)){Object.assign(player,{x:raw.x,z:raw.z,hp:Math.max(1,Math.min(100,raw.hp)),level:raw.level,xp:raw.xp,woodGathered:raw.woodGathered||0,crafted:raw.crafted||0,bag:raw.bag,equipped:raw.equipped});for(const x of raw.explored)if(typeof x==='string')explored.add(x);for(const x of raw.looted)if(typeof x==='string')looted.add(x);for(const x of raw.discovered)if(PLACES.some(p=>p.id===x))discovered.add(x);for(const x of raw.defeated||[])if(Number.isInteger(x))defeated.add(x);Object.assign(harvests,raw.harvests||{});yaw=Number.isFinite(raw.yaw)?raw.yaw:0;player.armor=raw.armor||null;player.pet=raw.pet||null;player.camp=PLACES.some(p=>p.kind==='camp'&&p.id===raw.camp)?raw.camp:'camp';graves=Array.isArray(raw.graves)?raw.graves.filter(x=>Number.isFinite(x.x)&&Number.isFinite(x.z)&&Array.isArray(x.loot)):[];drops=Array.isArray(raw.drops)?raw.drops.filter(x=>Number.isFinite(x.x)&&Number.isFinite(x.z)&&Array.isArray(x.loot)):[];saveLoaded=true;}}catch{}
 for(const c of world.chests)if(looted.has(c.id)){c.opened=true;c.lid.rotation.x=-.75;}
 world.animals.forEach((a,i)=>{a.id=a.kind==='chicken'?1000+i:a.guardian?world.animals.filter(x=>x.kind!=='chicken').indexOf(a):i;a.maxHp=a.hp*(1+a.level*.065);a.hp=a.maxHp;if(defeated.has(a.id)){a.dead=true;a.mesh.visible=false;}});
-for(const r of world.resources){if(Number.isFinite(harvests[r.id]))r.hits=Math.max(0,r.hits-harvests[r.id]);if(r.hits===0&&r.mesh)r.mesh.visible=false;}
+for(const r of world.resources){if(Number.isFinite(harvests[r.id]))r.hits=Math.max(0,r.hits-harvests[r.id]);if(r.hits===0&&r.mesh)r.mesh.visible=false;restoreOre(r);}
 if(world.blocked(player.x,player.z)){player.x=0;player.z=38;}
 reveal(explored,player.x,player.z);
 function trialRoute(kind){const url=new URL(location.href);if(kind)url.searchParams.set('trial',kind);else url.searchParams.delete('trial');location.href=url.href;}
-function resetTrial(){if(!trialActor)return;weapon.cancelUse();feedback.reset();pendingFusion=null;selected=-1;movingItem=false;bagFilter='all';for(const o of [...drops,...graves]){scene.remove(o.mesh);o.mesh?.traverse(m=>{m.geometry?.dispose();m.material?.dispose();});}drops=[];graves=[];player.armor=null;player.pet=null;for(const p of projectiles){scene.remove(p.m);p.m.geometry.dispose();p.m.material.dispose();}projectiles=[];dying=false;deathTime=0;$('death').hidden=true;player.x=0;player.z=38;player.hp=100;player.stamina=100;player.invisible=0;player.speedBuff=0;player.bag=newBag();player.equipped=player.bag[0].id;add(player.bag,'bow',1,2);add(player.bag,'pistol',1,2);add(player.bag,'arrow',30);add(player.bag,'bullet',20);add(player.bag,'bandage',8);for(const [k,n] of [['sword',1],['woodarmor',1],['stonearmor',1],['healpotion',2],['wood',12],['ore',6],['coal',4],['copper',3],['scrap',4],['snakepet',1]])add(player.bag,k,n);for(const key of ['woodarmor','stonearmor'])for(const lvl of [3,5])add(player.bag,key,1,lvl);add(player.bag,'speedpotion',2);add(player.bag,'invisibility',2);yaw=0;pitch=0;controller.reset();cameraRig.reset();combat.cancel();cancelRanged();attackTime=0;useTime=0;const a=trialActor;a.dead=false;a.mesh.visible=true;a.x=0;a.z=34;a.homeX=0;a.homeZ=34;a.hp=a.maxHp;resetEnemy(a);a.mesh.rotation.set(0,.35,0);a.mesh.position.set(0,terrain(0,34),34);Object.assign(a.artRig,{lastX:0,lastZ:34,death:0});a.poison=0;a.hitReaction=0;trialCombat=false;$('trial-fight').textContent='ابدأ المواجهة';}
-if(trial){trialActor=world.animals.find(a=>a.kind===trial&&!a.archer);for(const a of world.animals){a.dead=a!==trialActor;a.mesh.visible=a===trialActor;}resetTrial();player.level=3;$('trial-controls').hidden=false;$('trial-badge').hidden=false;$('trial-name').textContent=animalName(trial);$('pause-title').textContent='معرض مخلوقات الغابة';$('save').hidden=true;$('trial-entry').hidden=true;$('welcome').querySelector('p').textContent='الخطوات 4–10 · '+animalName(trial)+' — افحص التصميم والحركة، ثم اختر بدء المواجهة من القائمة. تجربتك هنا لا تغيّر حفظ المغامرة.';$('welcome').querySelector('.fine').textContent='WASD للحركة · اسحب بالماوس للنظر · Esc لاختيار المخلوقات والمواجهة. هذه تجربة مؤقتة، وحفظ مغامرتك محفوظ.';}
+function resetTrial(){if(!trialActor)return;for(const r of world.resources.filter(r=>r.trialNode)){r.hits=3;delete harvests[r.id];restoreOre(r);}weapon.cancelUse();feedback.reset();pendingFusion=null;selected=-1;movingItem=false;bagFilter='all';for(const o of [...drops,...graves]){scene.remove(o.mesh);o.mesh?.traverse(m=>{m.geometry?.dispose();m.material?.dispose();});}drops=[];graves=[];player.armor=null;player.pet=null;for(const p of projectiles){scene.remove(p.m);p.m.geometry.dispose();p.m.material.dispose();}projectiles=[];dying=false;deathTime=0;$('death').hidden=true;player.x=0;player.z=38;player.hp=100;player.stamina=100;player.invisible=0;player.speedBuff=0;player.bag=newBag();player.equipped=player.bag[0].id;add(player.bag,'bow',1,2);add(player.bag,'pistol',1,2);add(player.bag,'arrow',30);add(player.bag,'bullet',20);add(player.bag,'bandage',8);for(const [k,n] of [['sword',1],['woodarmor',1],['stonearmor',1],['healpotion',2],['wood',12],['ore',6],['coal',4],['copper',3],['scrap',4],['snakepet',1]])add(player.bag,k,n);for(const key of ['woodarmor','stonearmor'])for(const lvl of [3,5])add(player.bag,key,1,lvl);add(player.bag,'speedpotion',2);add(player.bag,'invisibility',2);yaw=0;pitch=0;controller.reset();cameraRig.reset();combat.cancel();cancelRanged();attackTime=0;useTime=0;const a=trialActor;a.dead=false;a.mesh.visible=true;a.x=0;a.z=34;a.homeX=0;a.homeZ=34;a.hp=a.maxHp;resetEnemy(a);a.mesh.rotation.set(0,.35,0);a.mesh.position.set(0,terrain(0,34),34);Object.assign(a.artRig,{lastX:0,lastZ:34,death:0});a.poison=0;a.hitReaction=0;trialCombat=false;$('trial-fight').textContent='ابدأ المواجهة';}
+if(trial){for(const [i,key] of ['ore','coal','copper'].entries()){const x=-6+(i-1)*2.1,z=35,id='trial-ore-'+key,mesh=buildOreNode(key,id);mesh.position.set(x,terrain(x,z),z);scene.add(mesh);world.resources.push({id,x,z,y:terrain(x,z)+.55,key,name:ORES[key].name,n:1,hits:3,maxHits:3,mesh,trialNode:true});}trialActor=world.animals.find(a=>a.kind===trial&&!a.archer);for(const a of world.animals){a.dead=a!==trialActor;a.mesh.visible=a===trialActor;}resetTrial();player.level=3;$('trial-controls').hidden=false;$('trial-badge').hidden=false;$('trial-name').textContent=animalName(trial);$('pause-title').textContent='معرض مخلوقات الغابة';$('save').hidden=true;$('trial-entry').hidden=true;$('welcome').querySelector('p').textContent='الخطوات 4–11 · '+animalName(trial)+' — افحص التصميم والحركة، ثم اختر بدء المواجهة من القائمة. تجربتك هنا لا تغيّر حفظ المغامرة.';$('welcome').querySelector('.fine').textContent='WASD للحركة · اسحب بالماوس للنظر · Esc لاختيار المخلوقات والمواجهة. هذه تجربة مؤقتة، وحفظ مغامرتك محفوظ.';}
 $('trial-entry').onclick=()=>trialRoute('wolf');for(const kind of ['wolf','deer','mutant'])$('trial-'+kind).onclick=()=>trialRoute(kind);
-$('trial-return').onclick=()=>trialRoute(null);$('trial-reset').onclick=()=>{resetTrial();resume();};$('trial-fight').onclick=()=>{trialCombat=!trialCombat;clearEnemyAttack(trialActor);$('trial-fight').textContent=trialCombat?'عرض هادئ':'ابدأ المواجهة';resume();};
+$('trial-mine').onclick=()=>{if(!trial)return;resetTrial();player.x=-8.1;player.z=38;pitch=-.3;player.equipped=player.bag.find(i=>i?.key==='axe').id;cameraRig.reset();resume();notify('F لضرب الخام · Esc ثم تجربة التعدين لإعادة الكتل');};
+ $('trial-return').onclick=()=>trialRoute(null);$('trial-reset').onclick=()=>{resetTrial();resume();};$('trial-fight').onclick=()=>{trialCombat=!trialCombat;clearEnemyAttack(trialActor);$('trial-fight').textContent=trialCombat?'عرض هادئ':'ابدأ المواجهة';resume();};
 function equipped(){let it=player.bag.find(i=>i?.id===player.equipped&&ITEMS[i.key].tool);if(!it){it=player.bag.find(i=>i&&ITEMS[i.key].tool);player.equipped=it?.id||null;}return it;}
 function notify(text){$('notice').textContent=text;$('notice').classList.add('on');noticeTime=3.2;}
 function xp(n){if(player.level>=10)return;player.xp+=n;let req=60+(player.level-1)*35;while(player.xp>=req&&player.level<10){player.xp-=req;player.level++;player.hp=Math.min(100,player.hp+20);notify(`وصلت للمستوى ${player.level} · زادت قوة ضربتك`);req=60+(player.level-1)*35;}if(player.level===10)player.xp=0;}
@@ -96,7 +98,7 @@ function interact(){if(interactTime>0||dying)return;target=chooseTarget();if(!ta
   if(target.type==='station'){const s=target.obj;if(s.kind==='fire'){player.camp=s.id;player.hp=100;player.stamina=100;notify('استرحت وحُفظ المخيم كنقطة رجوع · الطبخ والضمادات متاحة');save(true);}open('inventory');return;}
   if(target.type==='drop'||target.type==='grave'){const o=target.obj.source;const next=player.bag.map(i=>i?{...i}:null);if(!o.loot.every(([k,n,l=1])=>add(next,k,n,l))){notify('رتّب الشنطة أولًا؛ الغنائم باقية هنا');return;}player.bag=next;scene.remove(o.mesh);o.mesh?.traverse(m=>{m.geometry?.dispose();m.material?.dispose();});if(target.type==='grave')graves=graves.filter(x=>x!==o);else drops=drops.filter(x=>x!==o);audio.sound(o.rare==='common'?'wood':o.rare==='mythic'?'mythic':'rare');useTime=.5;weapon.use('pickup');lootFeed(o.loot);save(true);return;}
   if(target.type==='resource'){
-    if(combat.action||attackTime>0)return;const r=target.obj,preview=player.bag.map(i=>i?{...i}:null);
+    if(combat.action||attackTime>0||useTime>0||dodgeTime>0)return;const r=target.obj,preview=player.bag.map(i=>i?{...i}:null);
     if(!add(preview,r.key,r.n)){notify('الشنطة ممتلئة؛ رتّبها أولًا');return;}
     if(!spend(['ore','coal','copper','wood','stone'].includes(r.key)?8:2))return;
     const action=combat.start(false,{kind:'mining',resourceId:r.id,duration:.42,impact:.19,heavy:true});attackTime=action.duration;weapon.attack('melee',action);audio.sound('wood',.25);return;
@@ -120,6 +122,9 @@ function damageFeedback(a,n,kind='normal'){
  while(host.children.length>5)host.children[0].remove();setTimeout(()=>row.remove(),760);
 }
 function presentHud(dt){
+ const mineral=state==='playing'&&!dying&&target?.type==='resource'&&ORES[target.obj.key]&&target.obj.hits>0?target.obj:null;
+ $('mining-status').hidden=!mineral;if(mineral){const m=miningProgress(mineral);$('mining-name').textContent=m.name;$('mining-left').textContent=m.left+' / '+m.total+' ضربات متبقية';$('mining-progress').max=m.total;$('mining-progress').value=m.left;}
+
  const statuses=potionStatuses(player),potionActive=state==='playing'&&!dying;
  $('potion-status').hidden=!potionActive||!statuses.length;
  const statusMarkup=statuses.map(s=>'<div class="potion-status" style="--potion:'+s.color+'"><b>'+s.symbol+'</b><span>'+s.name+'<small>'+Math.ceil(s.left)+' ث · '+(s.key==='invisibility'?'الهجوم يلغي الظل':'سرعة +25٪')+'</small><i style="width:'+Math.round(s.ratio*100)+'%"></i></span></div>').join('');
@@ -154,9 +159,9 @@ function resolveMelee(action){if(state!=='playing'||dying||dodgeTime>0)return;
  if(action.kind==='mining'){
    const r=world.resources.find(r=>r.id===action.resourceId);if(!r||r.hits<=0||aimAt(r.x,r.z,3.5)===null)return;
    if(!add(player.bag,r.key,r.n)){notify('لا توجد مساحة للموارد');return;}
-   wear(equipped(),.25);r.hits--;harvests[r.id]=(harvests[r.id]||0)+1;if(!r.hits&&r.mesh)r.mesh.visible=false;
-   if(r.key==='wood')player.woodGathered+=r.n;xp(r.key==='ore'?10:5);lootFeed([[r.key,r.n]]);
-   audio.sound(['ore','coal','copper','stone'].includes(r.key)?'stone':'wood');weapon.burst(r.x,r.y,r.z,r.key==='copper'?'#c08759':'#a69d80');shake=.035;updateHUD();save(true);return;
+   wear(equipped(),.25);r.hits--;harvests[r.id]=(harvests[r.id]||0)+1;if(ORES[r.key])hitOre(r);else if(!r.hits&&r.mesh)r.mesh.visible=false;
+   if(r.key==='wood')player.woodGathered+=r.n;if(!trial)xp(r.key==='ore'?10:5);lootFeed([[r.key,r.n]]);
+   const ore=ORES[r.key];audio.sound(ore?.sound||(r.key==='stone'?'stone':'wood'),r.hits?1:.8);weapon.burst(r.x,r.y,r.z,ore?.chip||'#a69d80',r.hits?7:18);shake=r.hits?.035:.065;updateHUD();save(true);return;
  }
 
  let best=null,dist=action.range;for(const a of world.animals){if(a.dead)continue;const d=aimAt(a.x,a.z,action.range);if(d!==null&&d<dist){best=a;dist=d;}}
@@ -262,7 +267,7 @@ function frame(now){requestAnimationFrame(frame);if(now-last<1000/(state==='play
     uiTime+=dt;if(uiTime>.15){uiTime=0;updateHUD();target=chooseTarget();$('target').hidden=!target;if(target)$('target').textContent=target.label;}
     saveTime+=dt;if(saveTime>25){saveTime=0;save(true);}
   }
-  art.update(state==='playing'?dt:0,elapsed,player);scenery.update(dt,elapsed);weather=weapon.update(state==='playing'?dt:0,elapsed,player);$('clock').textContent=weather;for(const o of [...drops,...graves]){if(o.mesh){animateLoot(o.mesh,elapsed);}}
+  for(const r of world.resources)animateOre(r,state==='playing'?dt:0);art.update(state==='playing'?dt:0,elapsed,player);scenery.update(dt,elapsed);weather=weapon.update(state==='playing'?dt:0,elapsed,player);$('clock').textContent=weather;for(const o of [...drops,...graves]){if(o.mesh){animateLoot(o.mesh,elapsed);}}
   world.fires.forEach((f,i)=>{f.scale.y=1.35+Math.sin(elapsed*9+i)*.18;f.rotation.y=elapsed*.7;});world.water.material.opacity=.74+Math.sin(elapsed*.7)*.035;
   if(state==='welcome'){camera.position.set(17+Math.sin(elapsed*.07)*2,10.5,53);camera.lookAt(0,2,17);}
   presentHud(state==='playing'?dt:0);activation.update(dt,state==='welcome'?{x:camera.position.x,z:camera.position.z}:player);renderer.render(scene,camera);frames++;fpsTime+=dt;if(fpsTime>=2){if(new URLSearchParams(location.search).has('qa'))$('perf').title='draw calls: '+renderer.info?.render.calls+' · triangles: '+renderer.info?.render.triangles+' · geometries: '+renderer.info?.memory.geometries;$('perf').textContent=`${Math.round(frames/fpsTime)} FPS · ${quality==='low'?'خفيفة':quality==='high'?'عالية':'متوازنة'}`;frames=0;fpsTime=0;}
