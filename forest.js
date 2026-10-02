@@ -1,5 +1,5 @@
 import {RANGED,reloadPose,recoilPose} from './weapon-motion.js';
-import {buildViewmodel,rebuildCreature,releaseViewmodel} from './models.js?v=0.8.1';
+import {buildViewmodel,rebuildCreature,releaseViewmodel} from './models.js?v=0.9.0';
 import * as T from './three.module.js';
 import {terrain,seeded,PLACES,LIMIT,MAP_LIMIT} from './systems.js';
 const box=new T.BoxGeometry(1,1,1),ball=new T.SphereGeometry(1,16,10),cylinder=new T.CylinderGeometry(1,1,1,8);
