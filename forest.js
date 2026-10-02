@@ -1,5 +1,6 @@
+import {armorSignature} from './armor-art.js';
 import {RANGED,reloadPose,recoilPose} from './weapon-motion.js';
-import {buildViewmodel,rebuildCreature,releaseViewmodel} from './models.js?v=0.12.0';
+import {buildViewmodel,rebuildCreature,releaseViewmodel} from './models.js?v=0.13.0';
 import * as T from './three.module.js';
 import {terrain,seeded,PLACES,LIMIT,MAP_LIMIT} from './systems.js';
 const box=new T.BoxGeometry(1,1,1),ball=new T.SphereGeometry(1,16,10),cylinder=new T.CylinderGeometry(1,1,1,8);
@@ -10,7 +11,7 @@ export function forestPresentation(scene,camera,world){
  const trail=new T.Mesh(new T.TorusGeometry(.6,.014,3,22,2.1),new T.MeshBasicMaterial({color:'#f3deb1',transparent:true,opacity:0,depthWrite:false}));trail.position.set(.35,-.1,-1);root.add(trail);
  const flash=new T.Mesh(ball,new T.MeshBasicMaterial({color:'#ffe2a2',transparent:true,opacity:0}));flash.scale.set(.12,.12,.3);flash.position.set(.48,-.22,-1.35);root.add(flash);
  const gear=new T.Group();root.add(gear);const useMesh=new T.Group();root.add(useMesh);useMesh.visible=false;part(useMesh,'#b88e68',.45,-.4,-.7,.085,.12,.085,ball);const flask=part(useMesh,'#75967a',.45,-.25,-.73,.12,.2,.12,ball);part(useMesh,'#5e4931',.45,-.07,-.73,.055,.065,.055);let useLeft=0,useKind='';useMesh.children[0].visible=false;const useHands=new T.Group();buildViewmodel(useHands,{key:'axe',lvl:1},null);useHands.remove(useHands.getObjectByName('held-axe'));useMesh.add(useHands);
- function rebuild(it,armor){const sig=(it?.key||'')+it?.lvl+(armor?.key||'')+armor?.lvl;if(sig===signature)return;signature=sig;equipProgress=0;drawTarget=0;drawAmount=0;reloadProgress=-1;if(bowString){bowString.material.dispose();}releaseViewmodel(gear);gear.clear();bowString=null;
+ function rebuild(it,armor){const sig=(it?.key||'')+it?.lvl+armorSignature(armor);if(sig===signature)return;signature=sig;equipProgress=0;drawTarget=0;drawAmount=0;reloadProgress=-1;if(bowString){bowString.material.dispose();}releaseViewmodel(gear);gear.clear();bowString=null;
   bowString=buildViewmodel(gear,it,armor);
   if(!['bow','pistol'].includes(it?.key)){const held=gear.getObjectByName('held-'+(it?.key||'axe')),hand=gear.getObjectByName('right-arm');if(held&&hand){const pivot=new T.Group();pivot.name='attack-pivot';pivot.position.copy(held.position);pivot.userData.home=pivot.position.clone();gear.add(pivot);held.position.sub(pivot.position);hand.position.sub(pivot.position);hand.userData.home=hand.position.clone();pivot.add(held,hand);}}
 
